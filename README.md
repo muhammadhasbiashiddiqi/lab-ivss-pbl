@@ -37,15 +37,39 @@ Web ini jadi pusat informasi buat dosen pembimbing, mahasiswa aktif, alumni, dan
 - Kelola riset yang dibimbing
 - Dashboard statistik member yang dibimbing
 
-### 🧑‍🎓 **Manajemen Member Lab**
+### 🧑‍🎓 **Portal Member Lab**
 - **Pendaftaran online dengan approval 2 tingkat:**
   1. Review Dosen Pengampu
   2. Review Ketua Lab
 - Form registrasi lengkap (biodata + judul penelitian + motivasi)
 - **Notifikasi email** untuk setiap tahap approval
 - Status: Pending Dosen → Pending Ketua Lab → Active → Alumni
-- Profil member dengan foto dan bio
-- Upload riset dan dokumentasi
+
+**Dashboard Member:**
+- Info NIM, Angkatan, Status keanggotaan
+- Info Dosen Pembimbing & status approval
+- Statistik: Total riset, publikasi, dokumen
+- Quick links ke fitur utama
+
+**Riset Saya:**
+- List riset yang diikuti member
+- Detail riset dengan info lengkap (team, funding, publications)
+- Upload dokumen riset (proposal, laporan, presentasi, dataset)
+- Download & manage uploaded documents
+- Track document approval status
+
+**Publikasi Saya:**
+- Manage publikasi personal (journal, conference, thesis)
+- Tab filter: Semua, Published, Draft
+- Add/Edit publikasi dengan form lengkap
+- Track citation count & DOI
+- Link publikasi ke riset terkait
+- Upload PDF publikasi
+
+**Profil & Berita:**
+- Edit profil lengkap dengan foto
+- Berita & event lab terbaru
+- Dokumentasi kegiatan lab
 
 ### 📄 **Portal Riset & Publikasi**
 - Listing riset utama & pendukung
@@ -86,11 +110,20 @@ Portal ini dibangun dengan **4 level access control**:
 - 📞 Kontak & informasi lab
 
 ### 🔐 **Member Area** (Login as Member)
-- 👤 Profil & edit profile
-- 📤 Upload riset & dokumentasi
-- 📋 Lihat pengumuman internal
-- 💬 Request akses peralatan
-- 📊 Tracking status approval pendaftaran
+- 🏠 **Dashboard** - Overview riset, publikasi, status member
+- 👤 **Profil** - Edit biodata, foto, bio, password
+- 🧪 **Riset Saya** - Manage riset yang diikuti
+  - List semua riset aktif
+  - Upload dokumen (proposal, laporan, dataset, presentasi)
+  - Download dokumen yang sudah diupload
+  - Track approval status dokumen
+- 📜 **Publikasi Saya** - Manage publikasi personal
+  - Add/Edit paper, journal, conference
+  - Filter: All, Published, Draft
+  - Track citations & DOI
+  - Upload PDF publikasi
+- 📰 **Berita & Event** - Info terbaru lab
+- 📊 **Statistik** - Total riset, dokumen, publikasi, citations
 
 ### 👨‍🔬 **Dosen Area** (Login as Dosen)
 - 📊 Dashboard statistik member bimbingan
@@ -144,9 +177,24 @@ lab-ivss-pbl/
 │   │   ├── research/          # Research management
 │   │   ├── members/           # Member management
 │   │   ├── equipment/         # Equipment management
+│   │   ├── partials/          # Header, sidebar components
 │   │   └── settings/          # System settings
+│   ├── member/                # Member panel views
+│   │   ├── research/          # Research module
+│   │   │   ├── index.php      # List riset member
+│   │   │   └── detail.php     # Detail riset + dokumen
+│   │   ├── publications/      # Publications module
+│   │   │   └── index.php      # Manage publikasi personal
+│   │   ├── partials/          # Member sidebar, header
+│   │   ├── dashboard.php      # Member dashboard
+│   │   ├── news.php           # Berita & event
+│   │   └── profile.php        # Edit profile
 │   ├── public/                # Public pages
 │   └── layouts/               # Layout templates
+│       ├── admin.php          # Admin layout
+│       ├── member.php         # Member layout
+│       ├── auth.php           # Auth layout
+│       └── pages.php          # Public layout
 │
 ├── 📂 public/                 # Public assets & entry point
 │   ├── index.php              # Main entry point
@@ -170,8 +218,8 @@ lab-ivss-pbl/
 ## 🛠️ Setup & Instalasi
 
 ### 📋 Prerequisites
-- PHP >= 7.4
-- PostgreSQL >= 13
+- PHP >= 8.4
+- PostgreSQL >= 15
 - Apache/Nginx
 - Git
 
@@ -211,16 +259,38 @@ chmod -R 755 public/assets/uploads
 
 ### 🔑 Default Login
 
-| Role | Email | Password |
-|------|-------|----------|
-| **Admin** | admin@ivss.polinema.ac.id | admin123 |
-| **Ketua Lab** | ketualab@ivss.polinema.ac.id | admin123 |
-| **Dosen 1** | budi.dosen@polinema.ac.id | admin123 |
-| **Dosen 2** | andi.dosen@polinema.ac.id | admin123 |
-| **Dosen 3** | siti.dosen@polinema.ac.id | admin123 |
-| **Member** | ahmad@student.polinema.ac.id | admin123 |
+| Role | Email | Password | Info |
+|------|-------|----------|------|
+| **Admin** | admin@ivss.polinema.ac.id | admin123 | Full access |
+| **Ketua Lab** | ketualab@ivss.polinema.ac.id | admin123 | Dr. Muhammad Hasan |
+| **Dosen 1** | budi.dosen@polinema.ac.id | admin123 | Dr. Budi Santoso |
+| **Dosen 2** | andi.dosen@polinema.ac.id | admin123 | Dr. Andi Wijaya |
+| **Dosen 3** | siti.dosen@polinema.ac.id | admin123 | Dr. Siti Nurhaliza |
+| **Member** | ahmad@student.polinema.ac.id | admin123 | Ahmad Fauzi (NIM: 2141720010) |
 
 > ⚠️ **PENTING:** Ganti password default setelah login pertama kali!
+
+### 📊 Sample Data Included
+
+**Database setup sudah include sample data:**
+- ✅ **7 Users** (1 admin, 1 ketua lab, 3 dosen, 2 member)
+- ✅ **6 Member Registrations** (pending approval)
+- ✅ **6 Research Projects** (5 active, 1 completed)
+- ✅ **5 News Articles** (4 published, 1 draft)
+- ✅ **15 Equipment Items** (lab inventory)
+- ✅ **8 Lab Publications** (featured)
+- ✅ **15 Notifications** (role-based)
+- ✅ **4 Research Members** (Ahmad Fauzi di 4 riset)
+- ✅ **5 Research Documents** (uploaded by member)
+- ✅ **3 Member Publications** (2 published, 1 draft)
+
+**Testing Member Features:**
+- Login sebagai **Ahmad Fauzi** (ahmad@student.polinema.ac.id)
+- Dashboard: Lihat 4 riset, 3 publikasi, 5 dokumen
+- Riset Saya: 4 riset (Face Recognition, IoT, Object Detection, NLP)
+- Publikasi Saya: 2 published, 1 draft
+- Upload dokumen riset baru
+- Add/Edit publikasi personal
 
 **💡 Testing Role-Based Filtering:**
 - Login sebagai **Dosen 1** (budi.dosen) → akan melihat 2 pendaftar (Budi & Yusuf)
@@ -239,74 +309,139 @@ Untuk testing notifikasi email di localhost:
 
 ---
 
-## 🗄️ Database Schema (Simplified)
+## 🗄️ Database Schema
 
-Portal ini menggunakan **5 tabel utama**:
+Portal ini menggunakan **12 tabel** dengan relasi terstruktur:
+
+### 📋 Core Tables
 
 ```sql
 -- 1. USERS - Data pengguna (admin, ketua_lab, dosen, member)
 users (
     id, name, email, password, 
     role,  -- 'admin', 'ketua_lab', 'dosen', 'member'
-    status, -- 'active', 'inactive'
-    nim, nip, phone, angkatan, photo, 
-    created_at, updated_at
+    status, -- 'pending', 'active', 'inactive', 'rejected'
+    nim, nip, phone, angkatan, photo, bio,
+    created_at, updated_at, last_login
 )
 
 -- 2. MEMBER_REGISTRATIONS - Pendaftaran member baru (Approval Bertingkat)
 member_registrations (
     id, name, email, nim, phone, angkatan, origin, password,
-    
-    -- Penelitian
     research_title, research_id, motivation,
-    
-    -- Dosen Pengampu (Approval Tier 1)
     supervisor_id, supervisor_approved_at, supervisor_notes,
-    
-    -- Ketua Lab (Approval Tier 2)
     lab_head_approved_at, lab_head_notes,
-    
-    status, -- 'pending_supervisor', 'pending_lab_head', 'approved', 
-            -- 'rejected_supervisor', 'rejected_lab_head'
-    created_at, updated_at
+    status, created_at, updated_at
 )
 
--- 3. NEWS - Berita & dokumentasi
-news (
-    id, title, slug, content, excerpt, image,
-    category, tags, author_id, 
-    status, -- 'draft', 'published'
-    published_at, views, created_at, updated_at
-)
-
--- 4. RESEARCH - Data riset & publikasi
+-- 3. RESEARCH - Data riset lab
 research (
-    id, title, description, 
-    category, -- 'Riset Utama', 'Riset Pendukung', dll
-    image, leader_id, team_members,
-    status, -- 'active', 'completed', 'on-hold'
+    id, title, description, category, image, 
+    leader_id, team_members, status,
     start_date, end_date, funding, publications,
     created_at, updated_at
 )
 
--- 5. EQUIPMENT - Inventaris peralatan lab
-equipment (
-    id, name, 
-    category, -- 'Hardware', 'Software', 'Sensor', dll
-    brand, model, quantity,
-    condition, -- 'baik', 'maintenance', 'rusak'
-    location, specifications, purchase_date,
+-- 4. RESEARCH_MEMBERS - Relasi member dengan riset (Many-to-Many)
+research_members (
+    id, research_id, user_id,
+    role, -- 'leader', 'member', 'contributor'
+    joined_at, status,
+    UNIQUE(research_id, user_id)
+)
+
+-- 5. RESEARCH_DOCUMENTS - Dokumen riset yang diupload member
+research_documents (
+    id, research_id, uploaded_by,
+    title, description, file_name, file_path,
+    file_size, file_type, document_type,
+    version, status, -- 'draft', 'submitted', 'approved', 'rejected'
+    uploaded_at, updated_at
+)
+
+-- 6. MEMBER_PUBLICATIONS - Publikasi personal member
+member_publications (
+    id, user_id, title, authors, year,
+    journal, conference, doi, url, abstract,
+    citation_count, keywords, publication_type,
+    status, -- 'draft', 'submitted', 'under_review', 'published'
+    file_path, research_id, published_date,
     created_at, updated_at
 )
 ```
 
-**Relasi Penting:**
-- `users.id` → `news.author_id` (1 user → many news)
-- `users.id` → `research.leader_id` (1 dosen → many research)
-- `users.id` → `member_registrations.supervisor_id` (1 dosen → many pendaftar)
-- **Approval Flow:** `pending_supervisor` → `pending_lab_head` → `approved` → create user
+### 📰 Content & System Tables
+
+```sql
+-- 7. NEWS - Berita & dokumentasi lab
+-- 8. EQUIPMENT - Inventaris peralatan lab
+-- 9. PUBLICATIONS - Publikasi lab (featured)
+-- 10. NOTIFICATIONS - Notifikasi per role & user
+-- 11. SYSTEM_SETTINGS - Pengaturan sistem
+```
+
+### 🔗 Relasi Utama
+
+**Member Research Flow:**
+```
+users (member) ←→ research_members ←→ research
+                        ↓
+                research_documents
+```
+
+**Member Publications:**
+```
+users (member) → member_publications → research (optional link)
+```
+
+**Approval Flow:**
+```
+member_registrations → supervisor (dosen) → ketua_lab → users (active member)
+```
 
 📄 **Full schema:** Lihat `database/setup_database.sql`
+
+---
+
+## 🔗 Routing & URL Structure
+
+### 🌐 Public Routes
+```
+index.php?page=home             → Landing page
+index.php?page=about            → Tentang Lab IVSS
+index.php?page=research         → List riset publik
+index.php?page=publications     → List publikasi publik
+index.php?page=news             → Berita & event
+index.php?page=register         → Form pendaftaran member
+```
+
+### 🔐 Member Routes
+```
+index.php?page=member                    → Dashboard member
+index.php?page=member-research           → List riset yang diikuti
+index.php?page=member-research-detail&id=1  → Detail riset + dokumen
+index.php?page=member-publications       → Publikasi personal
+index.php?page=member-profile           → Edit profil
+index.php?page=member-news              → Berita & event lab
+```
+
+### 👨‍🔬 Dosen Routes
+```
+index.php?page=admin                → Dashboard dosen
+index.php?page=admin-applicants     → Review pendaftar
+index.php?page=admin-research       → Kelola riset bimbingan
+```
+
+### 👨‍🏫 Admin/Ketua Lab Routes
+```
+index.php?page=admin                → Dashboard admin
+index.php?page=admin-applicants     → Approval pendaftar (final)
+index.php?page=admin-members        → Kelola member
+index.php?page=admin-research       → Kelola riset
+index.php?page=admin-news           → Kelola berita
+index.php?page=admin-equip          → Kelola peralatan
+index.php?page=admin-settings       → Settings sistem
+```
 
 ---
 
@@ -377,24 +512,33 @@ Jika ditolak di salah satu tahap:
 - [x] Stats cards & summary cards di admin pages
 - [x] Filter tabs dengan inline action buttons
 
+### ✅ **Recently Completed**
+- [x] **Member Dashboard** dengan stats overview (riset, publikasi, dokumen)
+- [x] **Member Research Module** - List riset, detail, upload dokumen
+- [x] **Member Publications Module** - CRUD publikasi personal dengan filter
+- [x] **Research Detail Page** - Info lengkap riset + dokumen list
+- [x] **Database schema** untuk research_members, research_documents, member_publications
+- [x] **Notification bell** di header untuk semua role
+- [x] **Role-based sidebar** dengan menu khusus per role
+
 ### 🚧 **In Progress**
+- [ ] Backend integration (controller + database queries)
+- [ ] File upload handler untuk dokumen & publikasi
 - [ ] Public landing page refinement
-- [ ] Member dashboard & profile management
 - [ ] Dosen profile pages (public view)
-- [ ] Research detail page with full info
 - [ ] News detail page with comments
 
 ### 🔮 **Future Plans**
-- [ ] Upload riset file (PDF, PPT, dataset)
-- [ ] Advanced search & filtering
+- [ ] Advanced search & filtering (publikasi, riset)
 - [ ] Export data (PDF/Excel)
 - [ ] Email templates customization
-- [ ] Notification center (in-app)
+- [ ] Notification center dengan real-time updates
 - [ ] Dark mode toggle
-- [ ] Integrasi face recognition (presensi)
+- [ ] Integrasi face recognition untuk presensi
 - [ ] Activity logs & audit trail
 - [ ] REST API untuk mobile app
 - [ ] Multi-language support (ID/EN)
+- [ ] Collaboration features (comments, reviews)
 
 ---
 

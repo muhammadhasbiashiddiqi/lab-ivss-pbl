@@ -86,7 +86,7 @@ switch ($page) {
     
     // Member Publications
     case 'member-publications':
-        require __DIR__ . '/../view/member/publications.php';
+        require __DIR__ . '/../view/member/publications/index.php';
         break;
     
     // Member Profile

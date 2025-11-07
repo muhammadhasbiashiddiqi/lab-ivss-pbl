@@ -21,7 +21,7 @@
     <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
         <?php $currentPage = $_GET['page'] ?? 'member'; ?>
         
-        <!-- Dashboard -->
+        <!-- Dashboard Member -->
         <a href="index.php?page=member" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'member' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,30 +31,27 @@
             </div>
         </a>
         
-        <!-- Upload Dokumen -->
-        <a href="index.php?page=member-upload" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'member-upload' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
+        <!-- Riset Saya -->
+        <a href="index.php?page=member-research" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'member-research' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                 </svg>
-                <span>Upload Dokumen</span>
+                <span>Riset Saya</span>
             </div>
         </a>
         
-        <!-- Absensi -->
-        <a href="index.php?page=member-attendance" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'member-attendance' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
+        <!-- Publikasi Saya -->
+        <a href="index.php?page=member-publications" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'member-publications' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                 </svg>
-                <span>Absensi Saya</span>
+                <span>Publikasi Saya</span>
             </div>
         </a>
         
-        <!-- Divider -->
-        <div class="my-2 border-t border-slate-200"></div>
-        
-        <!-- Profile -->
+        <!-- Profil -->
         <a href="index.php?page=member-profile" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'member-profile' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,23 +61,13 @@
             </div>
         </a>
         
-        <!-- Edit Profil -->
-        <a href="index.php?page=member-profile-edit" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'member-profile-edit' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
+        <!-- Dokumentasi / Berita Lab -->
+        <a href="index.php?page=member-news" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'member-news' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
                 </svg>
-                <span>Edit Profil</span>
-            </div>
-        </a>
-        
-        <!-- Ubah Password -->
-        <a href="index.php?page=member-change-password" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'member-change-password' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
-            </svg>
-            <span>Ubah Password</span>
+                <span>Berita & Event</span>
             </div>
         </a>
         

@@ -1,83 +1,84 @@
-<?php ob_start(); ?>
+<?php 
+ob_start();
+
+// Get user info
+$userName = $_SESSION['user']['name'] ?? $_SESSION['name'] ?? 'Member';
+$userNIM = $_SESSION['user']['nim'] ?? $_SESSION['nim'] ?? '-';
+$userAngkatan = $_SESSION['user']['angkatan'] ?? $_SESSION['angkatan'] ?? '-';
+?>
 
 <!-- Welcome Banner -->
-<!-- <div class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 mb-8 overflow-hidden shadow-xl">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-    </div>
-    <div class="relative flex items-center justify-between">
+<div class="mb-6 bg-gradient-to-r from-blue-900 to-blue-800 rounded-xl p-6 text-white shadow-lg">
+    <div class="flex items-start justify-between">
         <div>
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Selamat Datang, <?= explode(' ', $_SESSION['name'] ?? 'Member')[0] ?>! 👋</h1>
-            <p class="text-blue-100">Mari produktif hari ini di Lab IVSS</p>
+            <h1 class="text-2xl font-bold mb-2">👋 Halo, <?= htmlspecialchars(explode(' ', $userName)[0]) ?>!</h1>
+            <p class="text-blue-100 text-sm mb-1">Selamat datang di Dashboard Member Lab IVSS</p>
+            <div class="flex items-center gap-4 text-xs text-blue-200 mt-3">
+                <span class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path>
+                    </svg>
+                    NIM: <?= htmlspecialchars($userNIM) ?>
+                </span>
+                <span class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    Angkatan <?= htmlspecialchars($userAngkatan) ?>
+                </span>
+            </div>
         </div>
         <div class="hidden md:block">
-            <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
+            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <span class="text-2xl font-bold"><?= strtoupper(substr($userName, 0, 1)) ?></span>
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <!-- Stats Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     
-    <!-- Card 1: Riset -->
-    <div class="group relative bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl p-4 text-white overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div class="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full -mr-12 -mt-12"></div>
-        <div class="relative">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                    </svg>
-                </div>
-                <svg class="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+    <!-- Card 1: Riset Saya -->
+    <div class="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                 </svg>
             </div>
-            <h3 class="text-3xl font-bold mb-1.5"><?= $totalMyResearch ?? 0 ?></h3>
-            <p class="text-blue-50 text-xs font-medium">Riset yang Kamu Ikuti</p>
+            <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Active</span>
         </div>
+        <h3 class="text-2xl font-bold text-slate-800 mb-0.5"><?= $totalMyResearch ?? 0 ?></h3>
+        <p class="text-xs text-slate-600 font-medium">Riset yang Diikuti</p>
     </div>
     
-    <!-- Card 2: Dokumen -->
-    <div class="group relative bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl p-4 text-white overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div class="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full -mr-12 -mt-12"></div>
-        <div class="relative">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                    </svg>
-                </div>
-                <svg class="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+    <!-- Card 2: Publikasi -->
+    <div class="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                 </svg>
             </div>
-            <h3 class="text-3xl font-bold mb-1.5"><?= $totalMyUploads ?? 0 ?></h3>
-            <p class="text-purple-50 text-xs font-medium">Dokumen Terupload</p>
+            <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-full">Total</span>
         </div>
+        <h3 class="text-2xl font-bold text-slate-800 mb-0.5"><?= $totalMyPublications ?? 0 ?></h3>
+        <p class="text-xs text-slate-600 font-medium">Publikasi Saya</p>
     </div>
     
-    <!-- Card 3: Status -->
-    <div class="group relative bg-gradient-to-br from-teal-600 to-cyan-600 rounded-xl p-4 text-white overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div class="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full -mr-12 -mt-12"></div>
-        <div class="relative">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <svg class="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+    <!-- Card 3: Status Member -->
+    <div class="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+        <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
-            <h3 class="text-3xl font-bold mb-1.5 capitalize"><?= $currentMemberStatus ?? 'Aktif' ?></h3>
-            <p class="text-teal-50 text-xs font-medium">Status Keanggotaan</p>
+            <span class="text-xs font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">Verified</span>
         </div>
+        <h3 class="text-2xl font-bold text-slate-800 mb-0.5 capitalize"><?= $currentMemberStatus ?? 'Aktif' ?></h3>
+        <p class="text-xs text-slate-600 font-medium">Status Keanggotaan</p>
     </div>
     
 </div>

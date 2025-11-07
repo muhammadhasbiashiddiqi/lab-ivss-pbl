@@ -75,18 +75,34 @@ switch ($page) {
         require __DIR__ . '/../app/controllers/MemberController.php';
         (new MemberController($pg))->dashboard();
         break;
-    case 'member-upload':
-        require __DIR__ . '/../app/controllers/MemberController.php';
-        (new MemberController($pg))->upload();
+    
+    // Member Research Routes
+    case 'member-research':
+        require __DIR__ . '/../view/member/research/index.php';
         break;
-    case 'member-attendance':
-        require __DIR__ . '/../app/controllers/MemberController.php';
-        (new MemberController($pg))->attendance();
+    case 'member-research-detail':
+        require __DIR__ . '/../view/member/research/detail.php';
         break;
+    
+    // Member Publications
+    case 'member-publications':
+        require __DIR__ . '/../view/member/publications.php';
+        break;
+    
+    // Member Profile
     case 'member-profile':
         require __DIR__ . '/../app/controllers/MemberController.php';
         (new MemberController($pg))->profile();
         break;
+    
+    // Member News & Events
+    case 'member-news':
+        require __DIR__ . '/../view/member/news.php';
+        break;
+    
+    // Legacy routes (will be deprecated)
+    case 'member-upload':
+    case 'member-attendance':
     case 'member-profile-edit':
     case 'member-change-password':
         echo "<div style='padding: 2rem; text-align: center;'>";

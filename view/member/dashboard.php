@@ -86,39 +86,79 @@ $userAngkatan = $_SESSION['user']['angkatan'] ?? $_SESSION['angkatan'] ?? '-';
 <!-- Main Content Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     
-    <!-- Riset Kamu -->
-    <div class="lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden border border-slate-100">
-        <div class="bg-gradient-to-r from-slate-50 to-white p-4 border-b border-slate-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
-                        Riset Kamu
-                    </h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Daftar riset yang sedang kamu ikuti</p>
-                </div>
+    <!-- Left Column: Riset & Pembimbing -->
+    <div class="lg:col-span-2 space-y-4">
+        
+        <!-- Info Pembimbing -->
+        <div class="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+            <div class="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-slate-200">
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    Dosen Pembimbing
+                </h3>
+            </div>
+            <div class="p-4">
+                <?php if (isset($supervisorInfo) && $supervisorInfo): ?>
+                    <div class="flex items-start gap-3">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-lg font-bold text-blue-600"><?= strtoupper(substr($supervisorInfo['name'] ?? 'D', 0, 1)) ?></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-semibold text-slate-800"><?= htmlspecialchars($supervisorInfo['name'] ?? '-') ?></h4>
+                            <p class="text-xs text-slate-500 mt-0.5"><?= htmlspecialchars($supervisorInfo['email'] ?? '-') ?></p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="inline-flex items-center px-2 py-1 bg-green-50 text-green-700 text-xs rounded-md font-medium">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Approved
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center py-4">
+                        <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-slate-500">Belum ada pembimbing</p>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
+        
+        <!-- Riset Saya -->
+        <div class="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+            <div class="px-4 py-3 bg-gradient-to-r from-slate-50 to-white border-b border-slate-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            Riset yang Diikuti
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Daftar riset aktif kamu</p>
+                    </div>
+                    <a href="index.php?page=member-research" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Lihat Semua →</a>
+                </div>
+            </div>
         
         <div class="overflow-x-auto">
             <?php if (empty($myResearches)): ?>
                 <!-- Empty State -->
-                <div class="p-8 text-center">
-                    <div class="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-6 text-center">
+                    <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                         </svg>
                     </div>
-                    <h4 class="text-sm font-semibold text-slate-700 mb-1.5">Belum Ada Riset</h4>
-                    <p class="text-xs text-slate-500 mb-3">Kamu belum terdaftar di riset manapun</p>
-                    <a href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Jelajahi Riset
-                    </a>
+                    <h4 class="text-sm font-semibold text-slate-700 mb-1">Belum Ada Riset</h4>
+                    <p class="text-xs text-slate-500">Kamu belum terdaftar di riset manapun</p>
                 </div>
             <?php else: ?>
                 <!-- Table -->
@@ -154,78 +194,87 @@ $userAngkatan = $_SESSION['user']['angkatan'] ?? $_SESSION['angkatan'] ?? '-';
                 </table>
             <?php endif; ?>
         </div>
+        </div>
+    
     </div>
     
-    <!-- Aksi Cepat -->
+    <!-- Right Sidebar: Quick Links & Activity -->
     <div class="space-y-4">
-        <!-- Quick Actions Card -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-100">
-            <div class="bg-gradient-to-r from-slate-50 to-white p-4 border-b border-slate-200">
-                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        
+        <!-- Quick Links -->
+        <div class="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+            <div class="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-slate-200">
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                     Aksi Cepat
                 </h3>
-                <p class="text-sm text-slate-500 mt-1">Menu yang sering digunakan</p>
             </div>
             
-            <div class="p-6 space-y-3">
-                <!-- Upload Laporan -->
-                <a href="index.php?page=member-upload" class="group relative bg-gradient-to-r from-blue-600 to-indigo-600 p-4 rounded-xl text-white overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 block">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full -mr-12 -mt-12"></div>
-                    <div class="relative flex items-center gap-3">
-                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-bold">Upload Laporan</p>
-                            <p class="text-xs text-blue-50">Upload dokumen riset kamu</p>
-                        </div>
-                        <svg class="w-5 h-5 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            <div class="p-3 space-y-2">
+                <!-- Riset Saya -->
+                <a href="index.php?page=member-research" class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-blue-200 transition-colors">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                         </svg>
                     </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-slate-800">Riset Saya</p>
+                        <p class="text-xs text-slate-500">Kelola riset</p>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </a>
                 
-                <!-- Lihat Absensi -->
-                <a href="index.php?page=member-attendance" class="group relative bg-gradient-to-r from-violet-600 to-purple-600 p-4 rounded-xl text-white overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 block">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full -mr-12 -mt-12"></div>
-                    <div class="relative flex items-center gap-3">
-                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-bold">Lihat Absensi</p>
-                            <p class="text-xs text-purple-50">Riwayat kehadiran kamu</p>
-                        </div>
-                        <svg class="w-5 h-5 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                <!-- Publikasi -->
+                <a href="index.php?page=member-publications" class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
                     </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-slate-800">Publikasi</p>
+                        <p class="text-xs text-slate-500">Paper & jurnal</p>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </a>
                 
-                <!-- Edit Profil -->
-                <a href="index.php?page=member-profile" class="group relative bg-gradient-to-r from-teal-600 to-cyan-600 p-4 rounded-xl text-white overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 block">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full -mr-12 -mt-12"></div>
-                    <div class="relative flex items-center gap-3">
-                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-bold">Edit Profil</p>
-                            <p class="text-xs text-teal-50">Ubah data diri kamu</p>
-                        </div>
-                        <svg class="w-5 h-5 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                <!-- Profil -->
+                <a href="index.php?page=member-profile" class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
+                    <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-slate-200 transition-colors">
+                        <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                     </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-slate-800">Profil Saya</p>
+                        <p class="text-xs text-slate-500">Edit profil</p>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+                
+                <!-- Berita & Event -->
+                <a href="index.php?page=member-news" class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
+                    <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-orange-200 transition-colors">
+                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-slate-800">Berita & Event</p>
+                        <p class="text-xs text-slate-500">Info terbaru</p>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-orange-600 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </a>
             </div>
         </div>

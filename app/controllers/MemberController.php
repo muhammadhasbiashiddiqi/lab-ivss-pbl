@@ -64,8 +64,184 @@ class MemberController {
         // Ambil data profil member
         $me = $this->getMemberProfile($userId);
         
+        // Kirim data ke view (new location: settings/index.php)
+        include __DIR__ . '/../../view/member/settings/index.php';
+    }
+    
+    public function editProfile() {
+        // Session sudah di-start di index.php
+        $userId = $_SESSION['user_id'] ?? null;
+        $title = 'Edit Profil';
+        
+        // Ambil data profil member untuk form
+        $me = $this->getMemberProfileFull($userId);
+        
         // Kirim data ke view
-        include __DIR__ . '/../../view/member/profile.php';
+        include __DIR__ . '/../../view/member/settings/edit.php';
+    }
+    
+    public function updateProfile() {
+        // Session sudah di-start di index.php
+        $userId = $_SESSION['user_id'] ?? null;
+        
+        // Validasi request method
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?page=member-settings');
+            exit;
+        }
+        
+        // Ambil data dari form
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $nim = $_POST['nim'] ?? '';
+        $phone = $_POST['phone'] ?? '';
+        $angkatan = $_POST['angkatan'] ?? '';
+        $origin = $_POST['origin'] ?? '';
+        
+        // Validasi required fields
+        if (empty($name) || empty($email) || empty($nim) || empty($angkatan)) {
+            $_SESSION['error'] = 'Nama, Email, NIM, dan Angkatan wajib diisi!';
+            header('Location: index.php?page=member-settings-edit');
+            exit;
+        }
+        
+        // Check email uniqueness (exclude current user)
+        $checkQuery = "SELECT id FROM users WHERE email = $1 AND id != $2";
+        $checkResult = @pg_query_params($this->db, $checkQuery, [$email, $userId]);
+        if ($checkResult && pg_num_rows($checkResult) > 0) {
+            $_SESSION['error'] = 'Email sudah digunakan oleh user lain!';
+            header('Location: index.php?page=member-settings-edit');
+            exit;
+        }
+        
+        // Update profile
+        $query = "UPDATE users 
+                  SET name = $1, 
+                      email = $2, 
+                      nim = $3, 
+                      phone = $4, 
+                      angkatan = $5, 
+                      origin = $6,
+                      updated_at = CURRENT_TIMESTAMP
+                  WHERE id = $7";
+        
+        $result = @pg_query_params($this->db, $query, [
+            $name,
+            $email,
+            $nim,
+            $phone ?: null,
+            $angkatan,
+            $origin ?: null,
+            $userId
+        ]);
+        
+        if ($result) {
+            // Update session data
+            $_SESSION['name'] = $name;
+            $_SESSION['email'] = $email;
+            if (isset($_SESSION['user'])) {
+                $_SESSION['user']['name'] = $name;
+                $_SESSION['user']['email'] = $email;
+            }
+            
+            $_SESSION['success'] = 'Profil berhasil diperbarui!';
+            header('Location: index.php?page=member-settings');
+        } else {
+            $_SESSION['error'] = 'Gagal memperbarui profil: ' . pg_last_error($this->db);
+            header('Location: index.php?page=member-settings-edit');
+        }
+        exit;
+    }
+    
+    public function changePassword() {
+        // Session sudah di-start di index.php
+        $userId = $_SESSION['user_id'] ?? null;
+        $title = 'Ubah Password';
+        
+        // Ambil data profil member untuk sidebar
+        $me = $this->getMemberProfile($userId);
+        
+        // Kirim data ke view
+        include __DIR__ . '/../../view/member/settings/change-password.php';
+    }
+    
+    public function submitChangePassword() {
+        // Session sudah di-start di index.php
+        $userId = $_SESSION['user_id'] ?? null;
+        
+        // Validasi request method
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?page=member-settings');
+            exit;
+        }
+        
+        // Ambil data dari form
+        $oldPassword = $_POST['old_password'] ?? '';
+        $newPassword = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+        
+        // Validasi required fields
+        if (empty($oldPassword) || empty($newPassword) || empty($confirmPassword)) {
+            $_SESSION['error'] = 'Semua field wajib diisi!';
+            header('Location: index.php?page=member-change-password');
+            exit;
+        }
+        
+        // Validasi password baru minimal 6 karakter
+        if (strlen($newPassword) < 6) {
+            $_SESSION['error'] = 'Password baru minimal 6 karakter!';
+            header('Location: index.php?page=member-change-password');
+            exit;
+        }
+        
+        // Validasi password baru dan konfirmasi match
+        if ($newPassword !== $confirmPassword) {
+            $_SESSION['error'] = 'Password baru dan konfirmasi tidak cocok!';
+            header('Location: index.php?page=member-change-password');
+            exit;
+        }
+        
+        // Ambil password lama dari database
+        $query = "SELECT password FROM users WHERE id = $1";
+        $result = @pg_query_params($this->db, $query, [$userId]);
+        
+        if (!$result || pg_num_rows($result) === 0) {
+            $_SESSION['error'] = 'User tidak ditemukan!';
+            header('Location: index.php?page=member-change-password');
+            exit;
+        }
+        
+        $user = pg_fetch_assoc($result);
+        
+        // Verifikasi password lama
+        if (!password_verify($oldPassword, $user['password'])) {
+            $_SESSION['error'] = 'Password lama tidak sesuai!';
+            header('Location: index.php?page=member-change-password');
+            exit;
+        }
+        
+        // Hash password baru
+        $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+        
+        // Update password di database
+        $updateQuery = "UPDATE users 
+                       SET password = $1, 
+                           updated_at = CURRENT_TIMESTAMP
+                       WHERE id = $2";
+        
+        $updateResult = @pg_query_params($this->db, $updateQuery, [
+            $hashedPassword,
+            $userId
+        ]);
+        
+        if ($updateResult) {
+            $_SESSION['success'] = 'Password berhasil diubah!';
+            header('Location: index.php?page=member-settings');
+        } else {
+            $_SESSION['error'] = 'Gagal mengubah password: ' . pg_last_error($this->db);
+            header('Location: index.php?page=member-change-password');
+        }
+        exit;
     }
     
     // Method pembantu
@@ -170,6 +346,34 @@ class MemberController {
             'email' => $_SESSION['email'] ?? '-',
             'nim' => '-',
             'angkatan' => '2024',
+            'status_lab' => 'aktif'
+        ];
+    }
+    
+    private function getMemberProfileFull($userId) {
+        $query = "SELECT * FROM users WHERE id = $1";
+        $result = @pg_query_params($this->db, $query, [$userId]);
+        
+        if ($result && pg_num_rows($result) > 0) {
+            $user = pg_fetch_assoc($result);
+            return [
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'nim' => $user['nim'] ?? '',
+                'phone' => $user['phone'] ?? '',
+                'angkatan' => $user['angkatan'] ?? '',
+                'origin' => $user['origin'] ?? '',
+                'status_lab' => $user['status'] === 'active' ? 'aktif' : 'alumni'
+            ];
+        }
+        
+        return [
+            'name' => $_SESSION['name'] ?? '',
+            'email' => $_SESSION['email'] ?? '',
+            'nim' => '',
+            'phone' => '',
+            'angkatan' => '',
+            'origin' => '',
             'status_lab' => 'aktif'
         ];
     }

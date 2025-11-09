@@ -40,5 +40,8 @@ function getDb()
         die('Database connection error: ' . pg_last_error());
     }
 
+    // Set timezone PostgreSQL ke Asia/Jakarta untuk konsistensi dengan PHP
+    @pg_query($connection, "SET TIME ZONE 'Asia/Jakarta'");
+
     return $connection;
 }

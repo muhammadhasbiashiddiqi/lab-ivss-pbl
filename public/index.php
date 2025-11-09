@@ -5,6 +5,9 @@ ob_start();
 // Start session untuk semua halaman
 session_start();
 
+// Set timezone to Asia/Jakarta (WIB - GMT+7)
+date_default_timezone_set('Asia/Jakarta');
+
 require_once __DIR__ . '/../app/config/database.php';
 $pg = getDb(); // dari database.php
 
@@ -15,14 +18,7 @@ switch ($page) {
         require __DIR__ . '/../app/controllers/HomeController.php';
         (new HomeController($pg))->index();
         break;
-    case 'research':
-        require __DIR__ . '/../app/controllers/ResearchController.php';
-        (new ResearchController($pg))->index();
-        break;
-    case 'news':
-        require __DIR__ . '/../app/controllers/NewsController.php';
-        (new NewsController($pg))->index();
-        break;
+    
     case 'login':
         require __DIR__ . '/../app/controllers/AuthController.php';
         (new AuthController($pg))->login();
@@ -102,6 +98,14 @@ switch ($page) {
         (new AdminController($pg))->settings();
         break;
     
+    // Dosen Routes (Publications & Students)
+    case 'admin-publications':
+        require __DIR__ . '/../view/admin/publications/index.php';
+        break;
+    case 'admin-students':
+        require __DIR__ . '/../view/admin/students/index.php';
+        break;
+    
     // Member Routes
     case 'member':
         require __DIR__ . '/../app/controllers/MemberController.php';
@@ -121,27 +125,32 @@ switch ($page) {
         require __DIR__ . '/../view/member/publications/index.php';
         break;
     
-    // Member Profile
+    // Member Profile & Settings
     case 'member-profile':
+    case 'member-settings':
         require __DIR__ . '/../app/controllers/MemberController.php';
         (new MemberController($pg))->profile();
         break;
     
-    // Member News & Events
-    case 'member-news':
-        require __DIR__ . '/../view/member/news.php';
+    case 'member-settings-edit':
+        require __DIR__ . '/../app/controllers/MemberController.php';
+        (new MemberController($pg))->editProfile();
         break;
     
-    // Legacy routes (will be deprecated)
-    case 'member-upload':
-    case 'member-attendance':
-    case 'member-profile-edit':
+    case 'member-settings-update':
+        require __DIR__ . '/../app/controllers/MemberController.php';
+        (new MemberController($pg))->updateProfile();
+        break;
+    
     case 'member-change-password':
-        echo "<div style='padding: 2rem; text-align: center;'>";
-        echo "<h2>Halaman " . ucfirst(str_replace('member-', '', $page)) . "</h2>";
-        echo "<p>Halaman ini masih dalam pengembangan.</p>";
-        echo "<a href='index.php?page=member' style='color: blue;'>← Kembali ke Dashboard</a>";
-        echo "</div>";
+    case 'member-settings-change-password':
+        require __DIR__ . '/../app/controllers/MemberController.php';
+        (new MemberController($pg))->changePassword();
+        break;
+    
+    case 'member-settings-change-password-submit':
+        require __DIR__ . '/../app/controllers/MemberController.php';
+        (new MemberController($pg))->submitChangePassword();
         break;
     
     default:

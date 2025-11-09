@@ -1,144 +1,155 @@
 # 🤖🧪 Lab IVSS – Portal Management System
 
 > **Portal Lab Intelligent Vision and Smart System – Politeknik Negeri Malang**  
-> Proyek Basis Data untuk PBL | Computer Vision & Smart Systems Lab
+> Proyek Basis Data (PBL) | Computer Vision & Smart Systems Lab
 
-[![PHP](https://img.shields.io/badge/PHP-Native-777BB4?style=flat&logo=php&logoColor=white)](https://www.php.net/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-336791?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Status](https://img.shields.io/badge/Status-Active-success?style=flat)](https://github.com/hafisc/lab-ivss-pbl)
-[![License](https://img.shields.io/badge/License-Campus%20Project-orange?style=flat)](https://github.com/hafisc/lab-ivss-pbl)
-[![Made by](https://img.shields.io/badge/Made%20by-@hafisc-blue?style=flat)](https://github.com/hafisc)
+[![PHP](https://img.shields.io/badge/PHP-8.x%20Native-777BB4?style=flat&logo=php&logoColor=white)](https://www.php.net/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
 ---
 
-## 👋 Apa itu Lab IVSS?
+## 📖 Daftar Isi
 
-**Lab IVSS (Intelligent Vision and Smart System)** adalah laboratorium riset di Politeknik Negeri Malang yang fokus pada **Computer Vision**, **AI**, dan **IoT Smart Systems**. Portal web ini dibuat sebagai bagian dari tugas **PBL (Project Based Learning)** untuk memfasilitasi manajemen lab, member, riset, dan dokumentasi kegiatan.
+- [Tentang](#-tentang)
+- [Fitur Utama](#-fitur-utama)
+- [Database Schema](#-database-schema)
+- [Tech Stack](#-tech-stack)
+- [Instalasi](#-instalasi)
+- [User Roles](#-user-roles--permissions)
+- [API Routes](#-api-routes)
+- [Testing](#-testing)
 
-Web ini jadi pusat informasi buat dosen pembimbing, mahasiswa aktif, alumni, dan siapa aja yang pengen tahu aktivitas riset di Lab IVSS!
+---
 
-> 📸 _(Screenshot coming soon – portal lagi tahap development!)_
+## 👋 Tentang
+
+**Lab IVSS** adalah laboratorium riset di Politeknik Negeri Malang yang fokus pada **Computer Vision**, **AI**, dan **IoT Smart Systems**.
+
+**Portal Web ini** adalah sistem manajemen terintegrasi untuk:
+- ✅ Pendaftaran member dengan approval bertingkat (Dosen → Ketua Lab)
+- ✅ Tracking riset & publikasi ilmiah
+- ✅ Inventaris peralatan lab
+- ✅ Dashboard analytics real-time
+
+> 💡 Proyek PBL dengan fokus implementasi **database relasional PostgreSQL** dan **native PHP OOP**
 
 ---
 
 ## 🔥 Fitur Utama
 
-### 👨‍🏫 **Manajemen Admin & Ketua Lab**
-- Dashboard monitoring kegiatan lab real-time
-- **Approval bertingkat** pendaftar member baru (Dosen → Ketua Lab)
-- Kelola berita, riset, dan peralatan lab
-- Settings sistem dan profil
-- Role-based access control untuk setiap fitur
+### 👨‍💼 **Admin & Ketua Lab**
+- System overview & user management (CRUD semua role)
+- Final approval pendaftar member (Ketua Lab)
+- Kelola berita, riset, equipment
+- Real-time notifications
 
-### 👨‍🔬 **Manajemen Dosen Pengampu**
-- Review pendaftar yang memilih dosen sebagai pembimbing
-- **Notifikasi email** otomatis saat ada pendaftar baru
-- Approve/reject pendaftaran dengan catatan
-- Kelola riset yang dibimbing
-- Dashboard statistik member yang dibimbing
+### 👨‍🏫 **Dosen**
+- Dashboard statistik mahasiswa bimbingan
+- **Approval pertama** pendaftar (yang pilih sebagai pembimbing)
+- CRUD publikasi dosen (jurnal, konferensi, indexed Scopus Q1/Q2)
+- List mahasiswa bimbingan (filter angkatan, export Excel)
+- Kelola riset bimbingan
 
-### 🧑‍🎓 **Portal Member Lab**
-- **Pendaftaran online dengan approval 2 tingkat:**
-  1. Review Dosen Pengampu
-  2. Review Ketua Lab
-- Form registrasi lengkap (biodata + judul penelitian + motivasi)
-- **Notifikasi email** untuk setiap tahap approval
-- Status: Pending Dosen → Pending Ketua Lab → Active → Alumni
+### 🧑‍🎓 **Member**
+- Dashboard riset & publikasi
+- View profile & edit biodata
+- Change password (bcrypt)
+- List riset lab & publikasi
 
-**Dashboard Member:**
-- Info NIM, Angkatan, Status keanggotaan
-- Info Dosen Pembimbing & status approval
-- Statistik: Total riset, publikasi, dokumen
-- Quick links ke fitur utama
-
-**Riset Saya:**
-- List riset yang diikuti member
-- Detail riset dengan info lengkap (team, funding, publications)
-- Upload dokumen riset (proposal, laporan, presentasi, dataset)
-- Download & manage uploaded documents
-- Track document approval status
-
-**Publikasi Saya:**
-- Manage publikasi personal (journal, conference, thesis)
-- Tab filter: Semua, Published, Draft
-- Add/Edit publikasi dengan form lengkap
-- Track citation count & DOI
-- Link publikasi ke riset terkait
-- Upload PDF publikasi
-
-**Profil & Berita:**
-- Edit profil lengkap dengan foto
-- Berita & event lab terbaru
-- Dokumentasi kegiatan lab
-
-### 📄 **Portal Riset & Publikasi**
-- Listing riset utama & pendukung
-- Kategori: Computer Vision, IoT, Face Recognition, dll
-- Status riset: Active, Completed, On-Hold
-- Tim riset, funding, publikasi
-
-### 📰 **Berita & Dokumentasi**
-- Portal berita kegiatan lab
-- Workshop, seminar, publikasi paper
-- Kategori berita & search functionality
-- Draft & published mode
-
-### 🛠️ **Inventaris Peralatan Lab**
-- Katalog peralatan: Kamera, GPU, Sensor, dll
-- Kondisi: Baik, Maintenance, Rusak
-- Lokasi & spesifikasi lengkap
-- Purchase tracking
-
-### 🎨 **Modern UI/UX**
-- Tailwind CSS - clean & responsive
-- Dark mode ready (coming soon)
-- Mobile-friendly design
-- Smooth animations & transitions
+### 🌐 **Public (No Login)**
+- Landing page Lab IVSS
+- Form pendaftaran member online
+- List riset & publikasi lab
+- Berita & kegiatan lab
 
 ---
 
-## 🏗️ Arsitektur & Modul
+## 🗄️ Database Schema
 
-Portal ini dibangun dengan **4 level access control**:
+Portal menggunakan **PostgreSQL** dengan **8 tabel utama**:
 
-### 🌐 **Public Area** (No Login Required)
-- 🏠 Landing page Lab IVSS
-- 👨‍🏫 Profil dosen pembimbing
-- 📄 Listing riset & publikasi
-- 📰 Berita & kegiatan lab
-- 📝 **Pendaftaran member online** (dengan form lengkap)
-- 📞 Kontak & informasi lab
+### Tabel & Relasi:
 
-### 🔐 **Member Area** (Login as Member)
-- 🏠 **Dashboard** - Overview riset, publikasi, status member
-- 👤 **Profil** - Edit biodata, foto, bio, password
-- 🧪 **Riset Saya** - Manage riset yang diikuti
-  - List semua riset aktif
-  - Upload dokumen (proposal, laporan, dataset, presentasi)
-  - Download dokumen yang sudah diupload
-  - Track approval status dokumen
-- 📜 **Publikasi Saya** - Manage publikasi personal
-  - Add/Edit paper, journal, conference
-  - Filter: All, Published, Draft
-  - Track citations & DOI
-  - Upload PDF publikasi
-- 📰 **Berita & Event** - Info terbaru lab
-- 📊 **Statistik** - Total riset, dokumen, publikasi, citations
+```
+users (admin, ketua_lab, dosen, member)
+  ↓ supervises
+member_registrations (approval bertingkat)
+  ↓ interested_in
+research (riset lab)
 
-### 👨‍🔬 **Dosen Area** (Login as Dosen)
-- 📊 Dashboard statistik member bimbingan
-- ✅ **Review & approve pendaftar** yang memilih sebagai pembimbing
-- 🔔 Notifikasi email otomatis pendaftar baru
-- 📝 CRUD riset yang dibimbing
-- ⚙️ Settings profil
+users → news (author)
+users → notifications (recipient)
 
-### 👨‍🏫 **Admin/Ketua Lab Area** (Login as Admin/Ketua Lab)
-- 📊 Dashboard analytics lengkap
-- ✅ **Approval final** pendaftar (setelah disetujui dosen)
-- 📝 CRUD berita, riset, dan member
-- 🛠️ Kelola inventaris peralatan
-- ⚙️ Settings sistem & manajemen user
-- 📧 Email notification management
++ equipment (inventaris)
++ publications (jurnal, konferensi)
++ system_settings (konfigurasi)
+```
+
+### Entity Relationship Diagram:
+
+```mermaid
+erDiagram
+    USERS ||--o{ MEMBER_REGISTRATIONS : supervises
+    USERS ||--o{ RESEARCH : leads
+    USERS ||--o{ NEWS : authors
+    USERS ||--o{ NOTIFICATIONS : receives
+    MEMBER_REGISTRATIONS }o--|| RESEARCH : interested_in
+```
+
+### Tabel USERS
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'member',        -- admin, ketua_lab, dosen, member
+    status VARCHAR(50) DEFAULT 'active',       -- active, inactive
+    nim VARCHAR(50),                           -- mahasiswa
+    nip VARCHAR(50),                           -- dosen
+    phone VARCHAR(20),
+    angkatan VARCHAR(10),
+    origin VARCHAR(255),
+    supervisor_id INTEGER REFERENCES users(id), -- dosen pembimbing
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP
+);
+```
+
+### Tabel MEMBER_REGISTRATIONS
+
+```sql
+CREATE TABLE member_registrations (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    nim VARCHAR(50),
+    password VARCHAR(255),
+    supervisor_id INTEGER REFERENCES users(id),
+    status VARCHAR(50) DEFAULT 'pending_supervisor',
+    -- pending_supervisor → pending_lab_head → approved → rejected
+    supervisor_approved_at TIMESTAMP,
+    lab_head_approved_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Approval Flow:**
+```
+Registration → pending_supervisor (Dosen) → pending_lab_head (Ketua Lab) → approved (Create User)
+```
+
+### Tabel Lainnya:
+
+**research** - Data riset (title, category, leader_id, status, funding)  
+**news** - Berita lab (title, content, author_id, status: draft/published)  
+**equipment** - Inventaris (name, category, condition, location)  
+**publications** - Publikasi (title, authors, DOI, citations, type)  
+**notifications** - Notifikasi real-time (user_id, message, is_read)  
+**system_settings** - Konfigurasi sistem (key-value)
 
 ---
 
@@ -146,84 +157,69 @@ Portal ini dibangun dengan **4 level access control**:
 
 | Technology | Purpose |
 |------------|---------|
-| **PHP Native** | Backend logic tanpa framework (pure PHP OOP) |
-| **PostgreSQL** | Database relasional |
-| **Tailwind CSS** | Styling modern & responsive |
-| **JavaScript (Vanilla)** | Interactivity & real-time search |
-| **Apache/Nginx** | Web server (cPanel friendly) |
-| **Git** | Version control |
+| **PHP Native 8.x** | Backend (pure PHP OOP, no framework) |
+| **PostgreSQL 14+** | Database relasional |
+| **Tailwind CSS** | Styling responsive |
+| **JavaScript Vanilla** | Interactivity & real-time search |
 
-**Why PHP Native?**  
-Karena ini tugas kampus yang fokus ke konsep database & SQL query, bukan framework magic ✨
+**Why PHP Native?** Fokus tugas kampus pada konsep database & SQL query.
 
 ---
 
-## 📁 Struktur Folder
+## 📁 Struktur Project
 
 ```
-lab-ivss-pbl/
-├── 📂 app/                    # Core application
-│   ├── config/                # Database & app config
-│   ├── controllers/           # Business logic (MVC)
-│   │   ├── AdminController.php
-│   │   ├── AuthController.php
-│   │   └── PublicController.php
-│   ├── models/                # Database models
-│   └── helpers/               # Helper functions
+Lab ivss/
+├── app/
+│   ├── config/database.php          # PostgreSQL connection
+│   ├── controllers/                 # 6 controllers (~110 KB)
+│   │   ├── AdminController.php      # Admin & Ketua Lab (44 KB)
+│   │   ├── AuthController.php       # Login/Register (15 KB)
+│   │   ├── MemberController.php     # Member dashboard (13 KB)
+│   │   └── UserController.php       # User CRUD (14 KB)
+│   └── helpers/                     # Helper functions
 │
-├── 📂 view/                   # Views (HTML + PHP)
-│   ├── admin/                 # Admin panel views
-│   │   ├── berita/            # News management
-│   │   ├── research/          # Research management
-│   │   ├── members/           # Member management
-│   │   ├── equipment/         # Equipment management
-│   │   ├── partials/          # Header, sidebar components
-│   │   └── settings/          # System settings
-│   ├── member/                # Member panel views
-│   │   ├── research/          # Research module
-│   │   │   ├── index.php      # List riset member
-│   │   │   └── detail.php     # Detail riset + dokumen
-│   │   ├── publications/      # Publications module
-│   │   │   └── index.php      # Manage publikasi personal
-│   │   ├── partials/          # Member sidebar, header
-│   │   ├── dashboard.php      # Member dashboard
-│   │   ├── news.php           # Berita & event
-│   │   └── profile.php        # Edit profile
-│   ├── public/                # Public pages
-│   └── layouts/               # Layout templates
-│       ├── admin.php          # Admin layout
-│       ├── member.php         # Member layout
-│       ├── auth.php           # Auth layout
-│       └── pages.php          # Public layout
+├── view/
+│   ├── admin/                       # Admin & Dosen panel
+│   │   ├── publications/index.php   # Publikasi dosen
+│   │   ├── students/index.php       # Mahasiswa bimbingan
+│   │   ├── members/approve.php      # Approval bertingkat
+│   │   └── dashboard.php
+│   ├── member/
+│   │   ├── settings/                # Profile settings
+│   │   │   ├── index.php            # View profile
+│   │   │   ├── edit.php             # Edit profile
+│   │   │   └── change-password.php  # Change password
+│   │   └── dashboard.php
+│   ├── layouts/                     # Admin, member, auth layouts
+│   └── auth/                        # Login, register
 │
-├── 📂 public/                 # Public assets & entry point
-│   ├── index.php              # Main entry point
-│   ├── assets/
-│   │   ├── css/               # Stylesheets
-│   │   ├── js/                # JavaScript files
-│   │   ├── images/            # Images & logos
-│   │   └── uploads/           # User uploaded files
-│   │       └── profiles/      # Profile photos
+├── public/
+│   ├── index.php                    # Main router (160 lines)
+│   └── assets/                      # CSS, JS, images
 │
-├── 📂 database/               # Database scripts
-│   └── setup_database.sql     # Complete DB setup
+├── database/
+│   └── setup_database.sql           # Complete DB setup (722 lines)
 │
-├── 📄 .env                    # Environment variables
-├── 📄 .env.example            # Env template
-└── 📄 README.md               # You're here! 👋
+└── README.md
 ```
+
+**Project Stats:**
+- Total Files: ~100+ PHP files
+- Total Lines: ~15,000+ lines
+- Database Tables: 8 tables
+- Routes: ~25 endpoints
 
 ---
 
-## 🛠️ Setup & Instalasi
+## 🛠️ Instalasi
 
-### 📋 Prerequisites
-- PHP >= 8.4
-- PostgreSQL >= 15
+### Prerequisites
+- PHP >= 8.0
+- PostgreSQL >= 14
 - Apache/Nginx
-- Git
 
-### 🚀 Quick Start
+### Quick Start
 
 ```bash
 # 1. Clone repository
@@ -237,389 +233,235 @@ CREATE DATABASE lab_ivss;
 \i database/setup_database.sql
 \q
 
-# 3. Konfigurasi environment
-cp .env.example .env
-# Edit .env sesuai konfigurasi database Anda
+# 3. Konfigurasi database
+# Edit app/config/database.php sesuai kredensial Anda
 
-# 4. Setup permissions (Linux/Mac)
-chmod -R 755 public/assets/uploads
-
-# 5. Jalankan di localhost
-# Akses: http://localhost/lab-ivss-pbl/public
-```
-
-### 🌐 Deployment ke cPanel
-
-1. Upload semua file ke hosting
-2. Arahkan **Document Root** ke folder `public/`
-3. Import database via phpPgAdmin
-4. Edit `.env` dengan credential hosting
-5. Set permission folder `uploads/` ke 755
-6. Done! 🎉
-
-### 🔑 Default Login
-
-| Role | Email | Password | Info |
-|------|-------|----------|------|
-| **Admin** | admin@ivss.polinema.ac.id | admin123 | Full access |
-| **Ketua Lab** | ketualab@ivss.polinema.ac.id | admin123 | Dr. Muhammad Hasan |
-| **Dosen 1** | budi.dosen@polinema.ac.id | admin123 | Dr. Budi Santoso |
-| **Dosen 2** | andi.dosen@polinema.ac.id | admin123 | Dr. Andi Wijaya |
-| **Dosen 3** | siti.dosen@polinema.ac.id | admin123 | Dr. Siti Nurhaliza |
-| **Member** | ahmad@student.polinema.ac.id | admin123 | Ahmad Fauzi (NIM: 2141720010) |
-
-> ⚠️ **PENTING:** Ganti password default setelah login pertama kali!
-
-### 📊 Sample Data Included
-
-**Database setup sudah include sample data:**
-- ✅ **7 Users** (1 admin, 1 ketua lab, 3 dosen, 2 member)
-- ✅ **6 Member Registrations** (pending approval)
-- ✅ **6 Research Projects** (5 active, 1 completed)
-- ✅ **5 News Articles** (4 published, 1 draft)
-- ✅ **15 Equipment Items** (lab inventory)
-- ✅ **8 Lab Publications** (featured)
-- ✅ **15 Notifications** (role-based)
-- ✅ **4 Research Members** (Ahmad Fauzi di 4 riset)
-- ✅ **5 Research Documents** (uploaded by member)
-- ✅ **3 Member Publications** (2 published, 1 draft)
-
-**Testing Member Features:**
-- Login sebagai **Ahmad Fauzi** (ahmad@student.polinema.ac.id)
-- Dashboard: Lihat 4 riset, 3 publikasi, 5 dokumen
-- Riset Saya: 4 riset (Face Recognition, IoT, Object Detection, NLP)
-- Publikasi Saya: 2 published, 1 draft
-- Upload dokumen riset baru
-- Add/Edit publikasi personal
-
-**💡 Testing Role-Based Filtering:**
-- Login sebagai **Dosen 1** (budi.dosen) → akan melihat 2 pendaftar (Budi & Yusuf)
-- Login sebagai **Dosen 2** (andi.dosen) → akan melihat 2 pendaftar (Siti & Fitri)
-- Login sebagai **Dosen 3** (siti.dosen) → akan melihat 1 pendaftar (Rudi)
-- Login sebagai **Ketua Lab** → akan melihat 1 pendaftar yang sudah di-approve dosen (Andi Pratama)
-
-### 📧 Email Configuration (Development)
-
-Untuk testing notifikasi email di localhost:
-- Install **MailHog** atau **FakeSMTP** untuk SMTP server lokal
-- Atau gunakan layanan SMTP testing (Mailtrap, SendGrid Sandbox)
-- Edit `app/helpers/EmailHelper.php` untuk konfigurasi SMTP
-
-**Production:** Gunakan email service (SendGrid, AWS SES, Mailgun)
-
----
-
-## 🗄️ Database Schema
-
-Portal ini menggunakan **12 tabel** dengan relasi terstruktur:
-
-### 📋 Core Tables
-
-```sql
--- 1. USERS - Data pengguna (admin, ketua_lab, dosen, member)
-users (
-    id, name, email, password, 
-    role,  -- 'admin', 'ketua_lab', 'dosen', 'member'
-    status, -- 'pending', 'active', 'inactive', 'rejected'
-    nim, nip, phone, angkatan, photo, bio,
-    created_at, updated_at, last_login
-)
-
--- 2. MEMBER_REGISTRATIONS - Pendaftaran member baru (Approval Bertingkat)
-member_registrations (
-    id, name, email, nim, phone, angkatan, origin, password,
-    research_title, research_id, motivation,
-    supervisor_id, supervisor_approved_at, supervisor_notes,
-    lab_head_approved_at, lab_head_notes,
-    status, created_at, updated_at
-)
-
--- 3. RESEARCH - Data riset lab
-research (
-    id, title, description, category, image, 
-    leader_id, team_members, status,
-    start_date, end_date, funding, publications,
-    created_at, updated_at
-)
-
--- 4. RESEARCH_MEMBERS - Relasi member dengan riset (Many-to-Many)
-research_members (
-    id, research_id, user_id,
-    role, -- 'leader', 'member', 'contributor'
-    joined_at, status,
-    UNIQUE(research_id, user_id)
-)
-
--- 5. RESEARCH_DOCUMENTS - Dokumen riset yang diupload member
-research_documents (
-    id, research_id, uploaded_by,
-    title, description, file_name, file_path,
-    file_size, file_type, document_type,
-    version, status, -- 'draft', 'submitted', 'approved', 'rejected'
-    uploaded_at, updated_at
-)
-
--- 6. MEMBER_PUBLICATIONS - Publikasi personal member
-member_publications (
-    id, user_id, title, authors, year,
-    journal, conference, doi, url, abstract,
-    citation_count, keywords, publication_type,
-    status, -- 'draft', 'submitted', 'under_review', 'published'
-    file_path, research_id, published_date,
-    created_at, updated_at
-)
-```
-
-### 📰 Content & System Tables
-
-```sql
--- 7. NEWS - Berita & dokumentasi lab
--- 8. EQUIPMENT - Inventaris peralatan lab
--- 9. PUBLICATIONS - Publikasi lab (featured)
--- 10. NOTIFICATIONS - Notifikasi per role & user
--- 11. SYSTEM_SETTINGS - Pengaturan sistem
-```
-
-### 🔗 Relasi Utama
-
-**Member Research Flow:**
-```
-users (member) ←→ research_members ←→ research
-                        ↓
-                research_documents
-```
-
-**Member Publications:**
-```
-users (member) → member_publications → research (optional link)
-```
-
-**Approval Flow:**
-```
-member_registrations → supervisor (dosen) → ketua_lab → users (active member)
-```
-
-📄 **Full schema:** Lihat `database/setup_database.sql`
-
----
-
-## 🔗 Routing & URL Structure
-
-### 🌐 Public Routes
-```
-index.php?page=home             → Landing page
-index.php?page=about            → Tentang Lab IVSS
-index.php?page=research         → List riset publik
-index.php?page=publications     → List publikasi publik
-index.php?page=news             → Berita & event
-index.php?page=register         → Form pendaftaran member
-```
-
-### 🔐 Member Routes
-```
-index.php?page=member                    → Dashboard member
-index.php?page=member-research           → List riset yang diikuti
-index.php?page=member-research-detail&id=1  → Detail riset + dokumen
-index.php?page=member-publications       → Publikasi personal
-index.php?page=member-profile           → Edit profil
-index.php?page=member-news              → Berita & event lab
-```
-
-### 👨‍🔬 Dosen Routes
-```
-index.php?page=admin                → Dashboard dosen
-index.php?page=admin-applicants     → Review pendaftar
-index.php?page=admin-research       → Kelola riset bimbingan
-```
-
-### 👨‍🏫 Admin/Ketua Lab Routes
-```
-index.php?page=admin                → Dashboard admin
-index.php?page=admin-applicants     → Approval pendaftar (final)
-index.php?page=admin-members        → Kelola member
-index.php?page=admin-research       → Kelola riset
-index.php?page=admin-news           → Kelola berita
-index.php?page=admin-equip          → Kelola peralatan
-index.php?page=admin-settings       → Settings sistem
+# 4. Akses
+# http://localhost/lab-ivss-pbl/public
 ```
 
 ---
 
-## 🔄 Member Registration & Approval Workflow
+## 👥 User Roles & Permissions
 
-Portal ini menggunakan **sistem approval bertingkat** untuk pendaftaran member baru:
+### Role Hierarchy:
+```
+Admin → Ketua Lab → Dosen → Member
+```
 
-### 📝 **Step 1: Mahasiswa Mendaftar**
-Mahasiswa mengisi form registrasi lengkap melalui halaman public:
-- Biodata (nama, email, NIM, angkatan, kelas/jurusan)
-- **Judul Penelitian** yang akan dikerjakan
-- **Pilih Dosen Pengampu** yang akan membimbing
-- Motivasi bergabung (minimal 50 karakter)
-- Password untuk akun
+### Permission Matrix:
 
-### 📧 **Step 2: Notifikasi Email Otomatis**
-Sistem mengirim email secara otomatis:
-- **Email ke Dosen Pengampu:** Notifikasi ada pendaftar baru dengan detail lengkap
-- **Email ke Mahasiswa:** Konfirmasi pendaftaran diterima + info tahapan approval
+| Feature | Admin | Ketua Lab | Dosen | Member |
+|---------|-------|-----------|-------|--------|
+| User Management | ✅ | ✅ | ❌ | ❌ |
+| Approve Member (First) | ❌ | ❌ | ✅ | ❌ |
+| Approve Member (Final) | ❌ | ✅ | ❌ | ❌ |
+| View Registrations | ✅ (read-only) | ✅ | ✅ (filtered) | ❌ |
+| Manage Publications | ❌ | ❌ | ✅ (own) | ❌ |
+| View Students | ❌ | ❌ | ✅ (own) | ❌ |
+| Edit Profile | ✅ | ✅ | ✅ | ✅ |
+| Change Password | ✅ | ✅ | ✅ | ✅ |
 
-### 👨‍🔬 **Step 3: Review Dosen Pengampu**
-Dosen login ke admin panel dan:
-- Melihat daftar pendaftar yang memilih dirinya sebagai pembimbing
-- Review biodata + judul penelitian + motivasi
-- **Approve** (lanjut ke Ketua Lab) atau **Reject** (dengan catatan)
-- Status: `pending_supervisor` → `pending_lab_head` atau `rejected_supervisor`
+### Role-Specific Features:
 
-### 👨‍🏫 **Step 4: Review Ketua Lab (Final Approval)**
-Setelah disetujui dosen, Ketua Lab melakukan review final:
-- Melihat pendaftar yang sudah lolos review dosen
-- Verifikasi kelengkapan data dan kesesuaian dengan lab
-- **Approve** (akun aktif) atau **Reject** (dengan catatan)
-- Status: `pending_lab_head` → `approved` atau `rejected_lab_head`
+**Admin:**
+- Full system access (superuser)
+- User CRUD (all roles)
+- View-only approval (tidak bisa approve/reject)
+- System settings
 
-### ✅ **Step 5: Akun Member Aktif**
-Jika disetujui oleh **kedua pihak**:
-- Data dipindahkan dari `member_registrations` ke tabel `users`
-- Status user: `active`
-- Member bisa login dan mengakses member area
-- Email notifikasi dikirim: "Selamat! Akun Anda sudah aktif"
+**Ketua Lab:**
+- Final approval pendaftar (after dosen)
+- CRUD riset, berita, equipment
+- Real-time notifications
 
-### 🔴 **Rejection Handling**
-Jika ditolak di salah satu tahap:
-- Status berubah menjadi `rejected_supervisor` atau `rejected_lab_head`
-- Catatan penolakan disimpan
-- Email notifikasi rejection dengan alasan
-- Mahasiswa bisa daftar ulang dengan data yang diperbaiki
+**Dosen:**
+- First approval pendaftar (own students)
+- CRUD publikasi dosen
+- List mahasiswa bimbingan
+- Export Excel
+
+**Member:**
+- View profile & research
+- Edit profile & change password
+- View-only lab data
+
+### Approval Flow Detail:
+
+```
+┌─────────────────────────┐
+│ 1. Member Register      │
+│    Status: pending_     │
+│    supervisor           │
+└────────┬────────────────┘
+         │
+         ↓
+┌─────────────────────────┐
+│ 2. Dosen Review         │
+│    - Approve → pending_ │
+│      lab_head           │
+│    - Reject → rejected_ │
+│      supervisor         │
+└────────┬────────────────┘
+         │ (if approved)
+         ↓
+┌─────────────────────────┐
+│ 3. Ketua Lab Review     │
+│    - Approve → CREATE   │
+│      USER               │
+│    - Reject → rejected_ │
+│      lab_head           │
+└─────────────────────────┘
+```
 
 ---
 
-## ✅ Development Roadmap
+## 🛣️ API Routes
 
-### ✔️ **Sudah Selesai**
-- [x] Database design & setup dengan approval bertingkat
-- [x] Authentication system (login/logout) - 4 role support
-- [x] **Role-based access control** (Admin, Ketua Lab, Dosen, Member)
-- [x] Admin dashboard with statistics
-- [x] CRUD Berita (create, read, update, delete, draft mode)
-- [x] CRUD Riset dengan kategori & table layout
-- [x] CRUD Peralatan lab dengan summary cards
-- [x] **Member approval system 2 tingkat** (Dosen → Ketua Lab)
-- [x] **Email notification system** (pendaftar + dosen)
-- [x] Search & filter functionality dengan real-time search
-- [x] Profile settings (update profile + upload photo)
-- [x] Security settings (change password)
-- [x] Responsive UI (mobile friendly)
-- [x] **Dynamic page title** untuk halaman auth
-- [x] Stats cards & summary cards di admin pages
-- [x] Filter tabs dengan inline action buttons
+**Base URL:** `http://localhost/Lab%20ivss/public/index.php?page={route}`
 
-### ✅ **Recently Completed**
-- [x] **Member Dashboard** dengan stats overview (riset, publikasi, dokumen)
-- [x] **Member Research Module** - List riset, detail, upload dokumen
-- [x] **Member Publications Module** - CRUD publikasi personal dengan filter
-- [x] **Research Detail Page** - Info lengkap riset + dokumen list
-- [x] **Database schema** untuk research_members, research_documents, member_publications
-- [x] **Notification bell** di header untuk semua role
-- [x] **Role-based sidebar** dengan menu khusus per role
+### Main Routes:
 
-### 🚧 **In Progress**
-- [ ] Backend integration (controller + database queries)
-- [ ] File upload handler untuk dokumen & publikasi
-- [ ] Public landing page refinement
-- [ ] Dosen profile pages (public view)
-- [ ] News detail page with comments
+| Route | Access | Purpose |
+|-------|--------|---------|
+| `home` | Public | Landing page |
+| `login` | Public | Authentication |
+| `register` | Public | Member registration |
+| `admin` | Admin/Ketua/Dosen | Dashboard |
+| `admin-registrations` | Admin/Ketua/Dosen | Approval member |
+| `admin-publications` | Dosen | Publikasi dosen |
+| `admin-students` | Dosen | Mahasiswa bimbingan |
+| `member` | Member | Member dashboard |
+| `member-settings` | Member | View profile |
+| `member-settings-edit` | Member | Edit profile |
+| `member-change-password` | Member | Change password |
 
-### 🔮 **Future Plans**
-- [ ] Advanced search & filtering (publikasi, riset)
-- [ ] Export data (PDF/Excel)
-- [ ] Email templates customization
-- [ ] Notification center dengan real-time updates
-- [ ] Dark mode toggle
-- [ ] Integrasi face recognition untuk presensi
+### Access Control:
+
+```php
+// Session-based auth
+$userRole = $_SESSION['user']['role'] ?? 'member';
+
+// Route protection
+if (!in_array($userRole, ['admin', 'ketua_lab'])) {
+    http_response_code(403);
+    die('Access Denied');
+}
+
+// Data filtering (Dosen)
+if ($userRole === 'dosen') {
+    $query = "SELECT * FROM member_registrations 
+              WHERE supervisor_id = $1 
+              AND status = 'pending_supervisor'";
+}
+```
+
+---
+
+## 🧪 Testing
+
+### Test Accounts:
+
+| Role | Email | Password |
+|------|-------|----------|
+| **Admin** | admin@ivss.polinema.ac.id | admin123 |
+| **Ketua Lab** | ketualab@ivss.polinema.ac.id | admin123 |
+| **Dosen** | budi.dosen@polinema.ac.id | admin123 |
+| **Member** | ahmad@student.polinema.ac.id | admin123 |
+
+> ⚠️ **Ganti password default setelah login!**
+
+### Sample Data Included:
+- ✅ 7 Users (1 admin, 1 ketua lab, 3 dosen, 2 member)
+- ✅ 6 Member Registrations (pending approval)
+- ✅ 5 Research Projects
+- ✅ 5 News Articles
+- ✅ 15 Equipment Items
+- ✅ 8 Publications
+
+### Test Scenarios:
+
+**1. Dosen Approval:**
+```
+Login: budi.dosen@polinema.ac.id
+→ Lihat 2 pendaftar (Budi Santoso, Yusuf Rahman)
+→ Approve → status: pending_lab_head
+```
+
+**2. Ketua Lab Approval:**
+```
+Login: ketualab@ivss.polinema.ac.id
+→ Lihat 1 pendaftar (Andi Pratama - sudah approved dosen)
+→ Approve → CREATE user account
+```
+
+**3. Member Profile:**
+```
+Login: ahmad@student.polinema.ac.id
+→ Edit profile: Name, Email, NIM, Phone, Angkatan, Origin
+→ Change password: Old password → New password (min 6 char)
+```
+
+---
+
+## 🔒 Security Features
+
+- ✅ **Password Hashing:** `password_hash()` with BCrypt
+- ✅ **SQL Injection Prevention:** Parameterized queries `pg_query_params()`
+- ✅ **XSS Prevention:** `htmlspecialchars()` on output
+- ✅ **Session Management:** Session-based authentication
+- ✅ **Role-Based Access Control:** Permission matrix per role
+- ✅ **Email Uniqueness:** UNIQUE constraint validation
+- ✅ **Timezone Sync:** Asia/Jakarta (PHP + PostgreSQL)
+
+---
+
+## 🚀 Future Development
+
+### ✅ Completed:
+- [x] Database design (8 tables, relasi lengkap)
+- [x] Authentication & authorization (4 roles)
+- [x] Member approval system 2 tingkat
+- [x] Publikasi dosen & mahasiswa bimbingan
+- [x] Member settings (edit profile, change password)
+- [x] Real-time notifications dengan badge counter
+- [x] Responsive UI (Tailwind CSS)
+
+### 🚧 Roadmap:
+- [ ] File upload (research documents, publications PDF)
+- [ ] Export Excel (publications, students)
+- [ ] Email notifications (SMTP integration)
+- [ ] Advanced search & filtering
 - [ ] Activity logs & audit trail
 - [ ] REST API untuk mobile app
-- [ ] Multi-language support (ID/EN)
-- [ ] Collaboration features (comments, reviews)
-
----
-
-## 📸 Features Preview
-
-### 🎛️ Admin Dashboard
-- **Real-time statistics:** Total member aktif, alumni, riset berjalan, berita published
-- **Pending approvals:** Notifikasi pendaftar baru
-- **Latest news:** Quick access ke berita terbaru
-
-### 📝 Content Management
-- **Rich text editor** untuk berita & riset
-- **Drag & drop upload** untuk gambar
-- **Live search & filter** di semua halaman list
-- **Status management:** Draft → Published workflow
-
-### 👥 Member Management
-- **Grid/Table view** untuk list member
-- **Filter by status:** Active, Inactive (Alumni), Pending
-- **Batch actions:** Set as alumni, activate, delete
-- **Profile details:** Foto, bio, kontak, riset yang diikuti
-
----
-
-## 🤝 Contributing
-
-Proyek ini adalah bagian dari tugas kuliah, tapi pull request tetap welcome! 😊
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ---
 
 ## 👨‍💻 Credits
 
 **Dibuat oleh:** [Hafis](https://github.com/hafisc)  
-**Institusi:** Politeknik Negeri Malang - Jurusan Teknologi Informasi  
+**Institusi:** Politeknik Negeri Malang - Teknologi Informasi  
 **Mata Kuliah:** Basis Data & Project Based Learning  
 **Tahun:** 2024
-
-### 📚 Referensi & Resources
-
-- **Lab IVSS Official** - Intelligent Vision and Smart System Laboratory
-- [Tailwind CSS Documentation](https://tailwindcss.com/)
-- [PostgreSQL Tutorial](https://www.postgresql.org/docs/)
-- Design inspiration: Modern admin dashboards & SaaS apps
 
 ---
 
 ## 📄 License
 
-Proyek ini dibuat untuk keperluan **tugas kampus (PBL)** dan bukan untuk komersial.
+Proyek ini dibuat untuk keperluan **tugas kampus (PBL)** - Educational purposes only.
 
 ```
 MIT License (Campus Project)
-
 Copyright (c) 2024 Hafis - Lab IVSS Polinema
-
-Permission is granted for educational purposes only.
 ```
-
----
-
-## 📞 Contact & Support
-
-Ada pertanyaan atau menemukan bug? 🐛
-
-- **GitHub Issues:** [Create an issue](https://github.com/hafisc/lab-ivss-pbl/issues)
-- **Email:** (254107023005@student.polinema.ac.id)
-- **Lab IVSS:** Contact your lab supervisor
 
 ---
 
 <div align="center">
 
-**⭐ Star this repo if you find it helpful!**
+**⭐ Star this repo if helpful!**
 
-Made with ❤️ by students of Polinema  
+Made with ❤️ by Polinema Students  
 🎓 Learning by Building | 🚀 Building by Learning
 
 </div>

@@ -119,7 +119,7 @@
                     <p class="text-xs text-slate-500">Ubah data diri kamu</p>
                 </div>
             </div>
-            <a href="index.php?page=member-profile-edit" 
+            <a href="index.php?page=member-settings-edit" 
                class="block w-full px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium text-center rounded-lg transition-colors">
                 Edit Profil
             </a>
@@ -144,25 +144,8 @@
             </a>
         </div>
         
-        <!-- Logout -->
-        <div class="bg-white border border-red-200 rounded-xl p-5">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h4 class="font-semibold text-slate-800">Logout</h4>
-                    <p class="text-xs text-slate-500">Keluar dari akun</p>
-                </div>
-            </div>
-            <a href="index.php?page=logout" 
-               onclick="return confirm('Yakin ingin logout?')"
-               class="block w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium text-center rounded-lg transition-colors">
-                Logout
-            </a>
-        </div>
+       
+       
         
     </div>
     
@@ -171,5 +154,5 @@
 <?php
 $content = ob_get_clean();
 $title = "Profil Saya";
-include __DIR__ . "/../layouts/member.php";
+include __DIR__ . "/../../layouts/member.php";
 ?>

@@ -579,36 +579,8 @@ http://localhost/Lab%20ivss/public/index.php?page={route}
 - [ ] 🌙 Dark mode toggle
 - [ ] 📈 Advanced analytics dashboard
 
----
-
-## 🎨 Screenshots
-
-<div align="center">
-
-_Coming soon! Stay tuned!_ 📸
-
-</div>
 
 ---
-
-## 👨‍💻 Credits & Team
-
-<div align="center">
-
-### Dibuat dengan 💜 oleh
-
-**[Hafis](https://github.com/hafisc)**
-
----
-
-🏫 **Politeknik Negeri Malang**  
-💻 Teknologi Informasi  
-📚 Mata Kuliah: Basis Data & Project Based Learning  
-📅 Tahun: 2024
-
----
-
-</div>
 
 ## 📄 License
 
@@ -625,31 +597,4 @@ of this software for educational purposes.
 
 ---
 
-<div align="center">
-
-## 🌟 Support Project Ini!
-
-Kalau project ini helpful, jangan lupa:
-
-⭐ **Star** repo ini  
-🔀 **Fork** untuk eksperimen  
-📢 **Share** ke teman-teman  
-☕ **Treat me coffee** (kidding! 😄)
-
----
-
-### 💬 Connect With Me
-
-[![GitHub](https://img.shields.io/badge/GitHub-hafisc-181717?style=for-the-badge&logo=github)](https://github.com/hafisc)
-
----
-
-**Made with ❤️ by Polinema Students**
-
-_🎓 Learning by Building | 🚀 Building by Learning_
-
----
-
 ![Thank You](https://img.shields.io/badge/Thanks%20for%20visiting!-❤️-red?style=for-the-badge)
-
-</div>

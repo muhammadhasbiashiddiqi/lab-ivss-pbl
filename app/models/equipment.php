@@ -63,12 +63,13 @@ class Equipment
     {
         $result = pg_query_params(
             $this->db,
-            "INSERT INTO equipment (name, category, brand, quantity, condition, location)
-             VALUES ($1, $2, $3, $4, $5, $6)",
+            "INSERT INTO equipment (name, category, brand, image, quantity, condition, location)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)",
             [
                 $data['name'],
                 $data['category'],
                 $data['brand'] ?? null,
+                $data['image'] ?? null,
                 (int)($data['quantity'] ?? 1),
                 $data['condition'],
                 $data['location'] ?? null,
@@ -86,14 +87,16 @@ class Equipment
              SET name = $1,
                  category = $2,
                  brand = $3,
-                 quantity = $4,
-                 condition = $5,
-                 location = $6
-             WHERE id = $7",
+                 image = $4,
+                 quantity = $5,
+                 condition = $6,
+                 location = $7
+             WHERE id = $8",
             [
                 $data['name'],
                 $data['category'],
                 $data['brand'] ?? null,
+                $data['image'] ?? null,
                 (int)($data['quantity'] ?? 1),
                 $data['condition'],
                 $data['location'] ?? null,

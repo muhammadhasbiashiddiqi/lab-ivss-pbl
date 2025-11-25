@@ -43,10 +43,28 @@ class EquipmentController
 
     public function store()
     {
+        $imagePath = null;
+
+        if (!empty($_FILES['image']['name'])) {
+            $uploadDir = __DIR__ . '/../../public/uploads/equipment/';
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $fileName = time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $_FILES['image']['name']);
+            $targetPath = $uploadDir . $fileName;
+
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                $imagePath = 'uploads/equipment/' . $fileName;
+            }
+        }
+
         $data = [
             'name'        => $_POST['name'] ?? '',
             'category'    => $_POST['category'] ?? 'Hardware',
             'brand'       => $_POST['brand'] ?? null,
+            'image'       => $imagePath,
             'quantity'    => $_POST['quantity'] ?? 1,
             'condition'   => $_POST['condition'] ?? 'baik',
             'location'    => $_POST['location'] ?? null,
@@ -60,12 +78,10 @@ class EquipmentController
             exit;
         }
 
-        $ok = $this->equipmentModel->create($data);
-
-        if ($ok) {
+        if ($this->equipmentModel->create($data)) {
             $_SESSION['success'] = 'Peralatan berhasil ditambahkan.';
         } else {
-            $_SESSION['error'] = 'Gagal menambahkan peralatan.';
+            $_SESSION['error'] = 'Gagal menambahkan peralatan: ' . pg_last_error($this->db);
         }
 
         header('Location: index.php?page=admin-equip');
@@ -101,10 +117,28 @@ class EquipmentController
             exit;
         }
 
+        $equipment = $this->equipmentModel->findById($id);
+
+        $imagePath = $equipment['image'] ?? null;
+        if (!empty($_FILES['image']['name'])) {
+            $uploadDir = __DIR__ . '/../../public/uploads/equipment/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $fileName = time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $_FILES['image']['name']);
+            $targetPath = $uploadDir . $fileName;
+
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                $imagePath = 'uploads/equipment/' . $fileName;
+            }
+        }
+
         $data = [
             'name'      => $_POST['name'] ?? '',
             'category'  => $_POST['category'] ?? '',
             'brand'     => $_POST['brand'] ?? null,
+            'image'     => $imagePath,
             'quantity'  => $_POST['quantity'] ?? 1,
             'condition' => $_POST['condition'] ?? 'baik',
             'location'  => $_POST['location'] ?? null,

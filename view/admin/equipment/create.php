@@ -2,7 +2,7 @@
 
 <h2 class="text-lg font-semibold text-slate-800 mb-4">Tambah Peralatan</h2>
 
-<form method="post" action="index.php?page=admin-equip&action=create" class="space-y-3">
+<form method="post" action="index.php?page=admin-equip&action=create" enctype="multipart/form-data" class="space-y-3">
     <div>
         <label class="block text-xs font-medium text-slate-700 mb-1">Nama Peralatan</label>
         <input type="text" name="name" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs" required>
@@ -45,6 +45,12 @@
     <div>
         <label class="block text-xs font-medium text-slate-700 mb-1">Deskripsi</label>
         <textarea name="description" rows="3" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs"></textarea>
+    </div>
+
+    <div>
+        <label class="block text-xs font-medium text-slate-700 mb-1">Gambar Peralatan (opsional)</label>
+        <input type="file" name="image" accept="image/*" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs bg-white">
+        <p class="text-[10px] text-slate-500 mt-1">Disarankan rasio 4:3.</p>
     </div>
 
     <div class="flex items-center gap-2">

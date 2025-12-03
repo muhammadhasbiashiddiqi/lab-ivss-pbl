@@ -13,11 +13,11 @@ class AuthController {
         if (isset($_SESSION['user_id'])) {
             $role = $_SESSION['role'];
             if ($role === 'admin' || $role === 'dosen' || $role === 'ketua_lab') {
-                header('Location: ./index.php?page=admin');
+                header('Location: /Lab%20ivss/public/index.php?page=admin');
             } else if ($role === 'member') {
-                header('Location: ./index.php?page=member');
+                header('Location: /Lab%20ivss/public/index.php?page=member');
             } else {
-                header('Location: ./index.php?page=home');
+                header('Location: /Lab%20ivss/public/index.php?page=home');
             }
             exit;
         }
@@ -67,13 +67,14 @@ class AuthController {
                     
                     $_SESSION['success'] = 'Login berhasil!';
                     
-                    // Redirect berdasarkan role (gunakan relative path)
+                    // Redirect berdasarkan role ke dashboard masing-masing
                     if ($user['role'] === 'admin' || $user['role'] === 'ketua_lab' || $user['role'] === 'dosen') {
-                        header('Location: ./index.php?page=admin');
+                        header('Location: /Lab%20ivss/public/index.php?page=admin');
                     } else if ($user['role'] === 'member') {
-                        header('Location: ./index.php?page=member');
+                        header('Location: /Lab%20ivss/public/index.php?page=member');
                     } else {
-                        header('Location: ./index.php?page=home');
+                        // Fallback ke home jika role tidak dikenali
+                        header('Location: /Lab%20ivss/public/index.php?page=home');
                     }
                     exit;
                 } else {
@@ -83,7 +84,7 @@ class AuthController {
                 $_SESSION['error'] = 'Email atau password salah!';
             }
             
-            header('Location: index.php?page=login');
+            header('Location: /Lab%20ivss/public/index.php?page=login');
             exit;
         }
         

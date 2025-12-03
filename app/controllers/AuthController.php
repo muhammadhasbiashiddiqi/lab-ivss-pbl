@@ -33,8 +33,10 @@ class AuthController {
                 exit;
             }
             
-            // Query user berdasarkan email
-            $query = "SELECT * FROM users WHERE email = $1 LIMIT 1";
+            // Query user berdasarkan email dengan join ke tabel roles
+            $query = "SELECT u.*, r.role_name FROM users u 
+                      JOIN roles r ON u.role_id = r.id 
+                      WHERE u.email = $1 LIMIT 1";
             $result = pg_query_params($this->db, $query, [$email]);
             
             if ($result && pg_num_rows($result) > 0) {
@@ -42,8 +44,8 @@ class AuthController {
                 
                 // Verifikasi password
                 if (password_verify($password, $user['password'])) {
-                    // Cek status untuk member
-                    if ($user['role'] === 'member' && $user['status'] === 'pending') {
+                    // Cek status untuk member/mahasiswa
+                    if (($user['role_name'] === 'member' || $user['role_name'] === 'mahasiswa') && $user['status'] === 'pending') {
                         $_SESSION['error'] = 'Akun Anda masih dalam proses review. Silakan tunggu approval dari dosen pembimbing.';
                         header('Location: ./index.php?page=login');
                         exit;
@@ -52,25 +54,24 @@ class AuthController {
                     // Set session - Format nested untuk konsistensi
                     $_SESSION['user'] = [
                         'id' => $user['id'],
-                        'name' => $user['name'],
+                        'name' => $user['username'], // Menggunakan username karena kolom name tidak ada di tabel users (adanya di tabel terkait)
                         'email' => $user['email'],
-                        'role' => $user['role'],
-                        'nim' => $user['nim'] ?? null,
+                        'role' => $user['role_name'],
                         'photo' => $user['photo'] ?? null
                     ];
                     
-                    // Backward compatibility (untuk code lama yang masih pakai format flat)
+                    // Backward compatibility
                     $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['name'] = $user['name'];
+                    $_SESSION['name'] = $user['username'];
                     $_SESSION['email'] = $user['email'];
-                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['role'] = $user['role_name'];
                     
                     $_SESSION['success'] = 'Login berhasil!';
                     
                     // Redirect berdasarkan role ke dashboard masing-masing
-                    if ($user['role'] === 'admin' || $user['role'] === 'ketua_lab' || $user['role'] === 'dosen') {
+                    if ($user['role_name'] === 'admin' || $user['role_name'] === 'ketua_lab' || $user['role_name'] === 'dosen') {
                         header('Location: /Lab%20ivss/public/index.php?page=admin');
-                    } else if ($user['role'] === 'member') {
+                    } else if ($user['role_name'] === 'member' || $user['role_name'] === 'mahasiswa') {
                         header('Location: /Lab%20ivss/public/index.php?page=member');
                     } else {
                         // Fallback ke home jika role tidak dikenali
@@ -222,21 +223,30 @@ class AuthController {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             
             // Insert ke tabel member_registrations
-            $insertQuery = "INSERT INTO member_registrations 
-                           (name, email, nim, phone, angkatan, origin, password, research_title, supervisor_id, motivation, status, created_at) 
-                           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending_supervisor', NOW()) RETURNING id";
-            $insertResult = @pg_query_params($this->db, $insertQuery, [
-                $name, $email, $nim, $phone, $angkatan, $origin, $hashedPassword, $research_title, $supervisor_id, $motivation
-            ]);
+            require_once __DIR__ . '/../models/member.php';
+            $memberModel = new Member($this->db);
             
-            if ($insertResult) {
-                $registration = pg_fetch_assoc($insertResult);
-                
+            $registrationData = [
+                'name' => $name,
+                'email' => $email,
+                'nim' => $nim,
+                'phone' => $phone,
+                'angkatan' => $angkatan,
+                'origin' => $origin,
+                'password' => $password, // Model will hash it
+                'research_title' => $research_title,
+                'supervisor_id' => $supervisor_id,
+                'motivation' => $motivation
+            ];
+
+            $registrationId = $memberModel->register($registrationData);
+            
+            if ($registrationId) {
                 // Load Email Helper
                 require_once __DIR__ . '/../helpers/EmailHelper.php';
                 
                 // Siapkan data untuk email
-                $registrationData = [
+                $emailData = [
                     'name' => $name,
                     'email' => $email,
                     'nim' => $nim,
@@ -250,7 +260,7 @@ class AuthController {
                 $emailSent = EmailHelper::sendSupervisorNotification(
                     $supervisor['email'],
                     $supervisor['name'],
-                    $registrationData
+                    $emailData
                 );
                 
                 // Kirim email ke ketua lab sebagai notifikasi info
@@ -258,7 +268,7 @@ class AuthController {
                     EmailHelper::sendLabHeadNotification(
                         $labHead['email'],
                         $labHead['name'],
-                        $registrationData,
+                        $emailData,
                         $supervisor['name']
                     );
                 }

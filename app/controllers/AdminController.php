@@ -84,7 +84,9 @@ class AdminController {
     }
     
     private function getTotalMemberAktif() {
-        $query = "SELECT COUNT(*) as total FROM users WHERE role = 'member' AND status = 'active'";
+        $query = "SELECT COUNT(*) as total FROM users u 
+                  JOIN roles r ON u.role_id = r.id 
+                  WHERE (r.role_name = 'member' OR r.role_name = 'mahasiswa') AND u.status = 'active'";
         $result = @pg_query($this->db, $query);
         if ($result) {
             $row = pg_fetch_assoc($result);
@@ -104,7 +106,9 @@ class AdminController {
     }
     
     private function getTotalAlumni() {
-        $query = "SELECT COUNT(*) as total FROM users WHERE role = 'member' AND status = 'inactive'";
+        $query = "SELECT COUNT(*) as total FROM users u 
+                  JOIN roles r ON u.role_id = r.id 
+                  WHERE (r.role_name = 'member' OR r.role_name = 'mahasiswa') AND u.status = 'inactive'";
         $result = pg_query($this->db, $query);
         if ($result) {
             $row = pg_fetch_assoc($result);
@@ -114,14 +118,10 @@ class AdminController {
     }
     
     private function getTotalRiset() {
-        // Asumsi tabel research/riset sudah ada
-        $query = "SELECT COUNT(*) as total FROM research WHERE status = 'active'";
-        $result = @pg_query($this->db, $query);
-        if ($result) {
-            $row = pg_fetch_assoc($result);
-            return $row['total'] ?? 0;
-        }
-        return 0;
+        require_once __DIR__ . '/../models/research.php';
+        $researchModel = new Research($this->db);
+        $stats = $researchModel->getStats();
+        return $stats['active_research'] ?? 0;
     }
     
     private function getTotalNews() {
@@ -142,7 +142,7 @@ class AdminController {
         
         if ($userRole === 'dosen') {
             // Dosen: hanya lihat pendaftar yang memilih dirinya sebagai supervisor DAN masih pending_supervisor
-            $query = "SELECT mr.*, u.name as supervisor_name 
+            $query = "SELECT mr.*, u.username as supervisor_name 
                       FROM member_registrations mr 
                       LEFT JOIN users u ON mr.supervisor_id = u.id 
                       WHERE mr.status = 'pending_supervisor' AND mr.supervisor_id = $1 
@@ -150,7 +150,7 @@ class AdminController {
             $params = [$userId];
         } elseif ($userRole === 'ketua_lab') {
             // Ketua Lab: hanya lihat yang sudah diapprove dosen (pending_lab_head)
-            $query = "SELECT mr.*, u.name as supervisor_name 
+            $query = "SELECT mr.*, u.username as supervisor_name 
                       FROM member_registrations mr 
                       LEFT JOIN users u ON mr.supervisor_id = u.id 
                       WHERE mr.status = 'pending_lab_head' 
@@ -158,7 +158,7 @@ class AdminController {
             $params = [];
         } else {
             // Admin: lihat semua yang pending (supervisor atau lab_head)
-            $query = "SELECT mr.*, u.name as supervisor_name 
+            $query = "SELECT mr.*, u.username as supervisor_name 
                       FROM member_registrations mr 
                       LEFT JOIN users u ON mr.supervisor_id = u.id 
                       WHERE mr.status IN ('pending_supervisor', 'pending_lab_head') 
@@ -218,88 +218,29 @@ class AdminController {
         session_start();
         
         $userRole = $_SESSION['user']['role'] ?? 'member';
-        $userId = $_SESSION['user']['id'] ?? 0;
         
-        // Ambil data pendaftaran
-        $query = "SELECT * FROM member_registrations WHERE id = $1";
-        $result = @pg_query_params($this->db, $query, [$id]);
+        require_once __DIR__ . '/../models/member.php';
+        $memberModel = new Member($this->db);
         
-        if ($result && pg_num_rows($result) > 0) {
-            $registration = pg_fetch_assoc($result);
-            $currentStatus = $registration['status'];
-            
-            // Validasi berdasarkan role
-            if ($userRole === 'dosen') {
-                // Dosen hanya bisa approve yang pending_supervisor
-                if ($currentStatus !== 'pending_supervisor') {
-                    $_SESSION['error'] = 'Pendaftar ini tidak dalam status menunggu approval dosen!';
-                    return;
-                }
-                
-                // Validasi dosen hanya bisa approve pendaftar yang pilih dirinya
-                if ($registration['supervisor_id'] != $userId) {
-                    $_SESSION['error'] = 'Anda tidak bisa approve pendaftar yang tidak memilih Anda sebagai pembimbing!';
-                    return;
-                }
-                
-                // Update ke pending_lab_head
-                $updateQuery = "UPDATE member_registrations 
-                               SET status = 'pending_lab_head', 
-                                   supervisor_approved_at = CURRENT_TIMESTAMP 
-                               WHERE id = $1";
-                $result = @pg_query_params($this->db, $updateQuery, [$id]);
-                
-                if ($result) {
-                    $_SESSION['success'] = 'Pendaftar berhasil di-approve! Sekarang menunggu approval Ketua Lab.';
-                } else {
-                    $_SESSION['error'] = 'Gagal approve pendaftar!';
-                }
-                
-            } elseif ($userRole === 'ketua_lab') {
-                // Ketua Lab approve dari pending_lab_head ke approved + create user
-                if ($currentStatus !== 'pending_lab_head') {
-                    $_SESSION['error'] = 'Pendaftar ini belum di-approve dosen atau sudah diproses!';
-                    return;
-                }
-                
-                // Gunakan password yang sudah disimpan saat registrasi
-                $password = $registration['password'] ?? password_hash('member123', PASSWORD_BCRYPT);
-                
-                // Buat akun user
-                $insertQuery = "INSERT INTO users (name, email, password, role, status, nim, phone, angkatan) 
-                               VALUES ($1, $2, $3, 'member', 'active', $4, $5, $6)";
-                $insertResult = @pg_query_params($this->db, $insertQuery, [
-                    $registration['name'],
-                    $registration['email'],
-                    $password,
-                    $registration['nim'] ?? null,
-                    $registration['phone'] ?? null,
-                    $registration['angkatan'] ?? null
-                ]);
-                
-                if ($insertResult) {
-                    // Update status pendaftaran
-                    $updateQuery = "UPDATE member_registrations 
-                                   SET status = 'approved', 
-                                       lab_head_approved_at = CURRENT_TIMESTAMP 
-                                   WHERE id = $1";
-                    @pg_query_params($this->db, $updateQuery, [$id]);
-                    
-                    $_SESSION['success'] = 'Pendaftar berhasil di-approve! Akun member telah dibuat dan aktif.';
-                    
-                    // TODO: Kirim email notifikasi ke mahasiswa bahwa akun sudah aktif
-                    
-                } else {
-                    $_SESSION['error'] = 'Gagal membuat akun user: ' . pg_last_error($this->db);
-                }
-                
+        // Use the model methods which call stored procedures
+        if ($userRole === 'dosen') {
+            // Dosen approval
+            $result = $memberModel->approveBySupervisor($id);
+            if ($result) {
+                $_SESSION['success'] = 'Pendaftar berhasil di-approve! Sekarang menunggu approval Ketua Lab.';
             } else {
-                // Admin TIDAK bisa approve - hanya Dosen dan Ketua Lab
-                $_SESSION['error'] = 'Admin tidak memiliki akses untuk approve pendaftar. Silakan hubungi Dosen atau Ketua Lab.';
-                return;
+                $_SESSION['error'] = 'Gagal approve pendaftar! Pastikan status valid.';
+            }
+        } elseif ($userRole === 'ketua_lab') {
+            // Ketua Lab approval
+            $result = $memberModel->approveByLabHead($id);
+            if ($result) {
+                $_SESSION['success'] = 'Pendaftar berhasil di-approve! Akun member telah dibuat dan aktif.';
+            } else {
+                $_SESSION['error'] = 'Gagal approve pendaftar! Pastikan status valid.';
             }
         } else {
-            $_SESSION['error'] = 'Pendaftar tidak ditemukan!';
+            $_SESSION['error'] = 'Anda tidak memiliki akses untuk approve pendaftar.';
         }
     }
     
@@ -307,51 +248,29 @@ class AdminController {
         session_start();
         
         $userRole = $_SESSION['user']['role'] ?? 'member';
-        $userId = $_SESSION['user']['id'] ?? 0;
         
-        // Ambil data pendaftaran
-        $query = "SELECT * FROM member_registrations WHERE id = $1";
-        $result = @pg_query_params($this->db, $query, [$id]);
+        require_once __DIR__ . '/../models/member.php';
+        $memberModel = new Member($this->db);
         
-        if ($result && pg_num_rows($result) > 0) {
-            $registration = pg_fetch_assoc($result);
-            $currentStatus = $registration['status'];
-            
-            // Tentukan status rejection berdasarkan role
-            if ($userRole === 'dosen') {
-                if ($currentStatus !== 'pending_supervisor') {
-                    $_SESSION['error'] = 'Anda tidak bisa menolak pendaftar di tahap ini!';
-                    return;
-                }
-                $newStatus = 'rejected_supervisor';
-                $message = 'Pendaftar berhasil ditolak. Email notifikasi akan dikirim.';
-                
-            } elseif ($userRole === 'ketua_lab') {
-                if ($currentStatus !== 'pending_lab_head') {
-                    $_SESSION['error'] = 'Pendaftar belum di tahap approval Ketua Lab!';
-                    return;
-                }
-                $newStatus = 'rejected_lab_head';
-                $message = 'Pendaftar berhasil ditolak. Email notifikasi akan dikirim.';
-                
-            } else {
-                // Admin TIDAK bisa reject - hanya Dosen dan Ketua Lab
-                $_SESSION['error'] = 'Admin tidak memiliki akses untuk reject pendaftar. Silakan hubungi Dosen atau Ketua Lab.';
-                return;
-            }
-            
-            // Update status ke rejected
-            $updateQuery = "UPDATE member_registrations SET status = $1 WHERE id = $2";
-            $result = @pg_query_params($this->db, $updateQuery, [$newStatus, $id]);
-            
+        // Notes can be passed via POST if available, here we use default
+        $notes = $_POST['notes'] ?? 'Rejected by ' . $userRole;
+
+        if ($userRole === 'dosen') {
+            $result = $memberModel->rejectBySupervisor($id, $notes);
             if ($result) {
-                $_SESSION['success'] = $message;
-                // TODO: Kirim email notifikasi rejection
+                $_SESSION['success'] = 'Pendaftar berhasil ditolak.';
+            } else {
+                $_SESSION['error'] = 'Gagal menolak pendaftar!';
+            }
+        } elseif ($userRole === 'ketua_lab') {
+            $result = $memberModel->rejectByLabHead($id, $notes);
+            if ($result) {
+                $_SESSION['success'] = 'Pendaftar berhasil ditolak.';
             } else {
                 $_SESSION['error'] = 'Gagal menolak pendaftar!';
             }
         } else {
-            $_SESSION['error'] = 'Pendaftar tidak ditemukan!';
+            $_SESSION['error'] = 'Anda tidak memiliki akses untuk reject pendaftar.';
         }
     }
     
@@ -560,6 +479,9 @@ class AdminController {
             session_start();
         }
         
+        require_once __DIR__ . '/../models/research.php';
+        $researchModel = new Research($this->db);
+        
         $action = $_GET['action'] ?? 'index';
         
         // Tangani berbagai aksi
@@ -569,12 +491,12 @@ class AdminController {
                 break;
                 
             case 'store':
-                $this->storeResearch();
+                $this->storeResearch($researchModel);
                 break;
                 
             case 'edit':
                 $id = intval($_GET['id'] ?? 0);
-                $researchItem = $this->getResearchById($id);
+                $researchItem = $researchModel->getById($id);
                 if ($researchItem) {
                     include __DIR__ . '/../../view/admin/research/edit.php';
                 } else {
@@ -585,22 +507,26 @@ class AdminController {
                 break;
                 
             case 'update':
-                $this->updateResearch();
+                $this->updateResearch($researchModel);
                 break;
                 
             case 'delete':
-                $this->deleteResearch();
+                $this->deleteResearch($researchModel);
                 break;
                 
             default:
                 // Index - daftar semua riset
                 $filter = $_GET['filter'] ?? 'all';
-                $allResearch = $this->getAllResearch();
+                $allResearch = $researchModel->getAll();
                 
                 if ($filter === 'active') {
-                    $researchList = array_filter($allResearch, fn($r) => $r['status'] === 'active');
+                    $researchList = array_filter($allResearch, function($r) {
+                        return $r['status'] === 'active';
+                    });
                 } elseif ($filter === 'completed') {
-                    $researchList = array_filter($allResearch, fn($r) => $r['status'] === 'completed');
+                    $researchList = array_filter($allResearch, function($r) {
+                        return $r['status'] === 'completed';
+                    });
                 } else {
                     $researchList = $allResearch;
                 }
@@ -610,157 +536,94 @@ class AdminController {
         }
     }
     
-    private function getAllResearch() {
-        $query = "SELECT * FROM research ORDER BY created_at DESC";
-        $result = @pg_query($this->db, $query);
-        $research = [];
-        
-        if ($result) {
-            while ($row = pg_fetch_assoc($result)) {
-                // Format image URL
-                if (!empty($row['image'])) {
-                    $row['image_url'] = $row['image'];
-                } else {
-                    $row['image_url'] = null;
-                }
-                $research[] = $row;
-            }
-        }
-        
-        return $research;
-    }
-    
-    private function getResearchById($id) {
-        $query = "SELECT * FROM research WHERE id = $1";
-        $result = @pg_query_params($this->db, $query, [$id]);
-        
-        if ($result && pg_num_rows($result) > 0) {
-            $row = pg_fetch_assoc($result);
-            // Format image URL
-            if (!empty($row['image'])) {
-                $row['image_url'] = $row['image'];
-            } else {
-                $row['image_url'] = null;
-            }
-            return $row;
-        }
-        
-        return null;
-    }
-    
-    private function storeResearch() {
-        $title = $_POST['title'] ?? '';
-        $description = $_POST['description'] ?? '';
-        $category = $_POST['category'] ?? '';
-        $status = $_POST['status'] ?? 'active';
-        
-        // Convert empty string to null for date fields
-        $start_date = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
-        $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
-        
-        // Convert empty string to null for optional text fields
-        $funding = !empty($_POST['funding']) ? $_POST['funding'] : null;
-        $team_members = !empty($_POST['team_members']) ? $_POST['team_members'] : null;
-        $publications = !empty($_POST['publications']) ? $_POST['publications'] : null;
+    private function storeResearch($model) {
+        $data = [
+            'title' => $_POST['title'] ?? '',
+            'description' => $_POST['description'] ?? '',
+            'category' => $_POST['category'] ?? '',
+            'status' => $_POST['status'] ?? 'active',
+            'start_date' => !empty($_POST['start_date']) ? $_POST['start_date'] : null,
+            'end_date' => !empty($_POST['end_date']) ? $_POST['end_date'] : null,
+            'funding' => !empty($_POST['funding']) ? $_POST['funding'] : null,
+            'team_members' => !empty($_POST['team_members']) ? $_POST['team_members'] : null,
+            'publications' => !empty($_POST['publications']) ? $_POST['publications'] : null,
+            'leader_id' => $_SESSION['user_id'] ?? null
+        ];
         
         // Handle image upload
-        $image = null;
+        $data['image'] = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $image = $this->uploadImage($_FILES['image'], 'research');
+            $data['image'] = $this->uploadImage($_FILES['image'], 'research');
         }
         
-        // Set leader_id dari session
-        $leader_id = $_SESSION['user_id'] ?? null;
-        
-        $query = "INSERT INTO research (title, description, category, image, leader_id, status, start_date, end_date, 
-                  funding, team_members, publications, created_at) 
-                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW()) RETURNING id";
-        $result = @pg_query_params($this->db, $query, [
-            $title, $description, $category, $image, $leader_id, $status, $start_date, $end_date, 
-            $funding, $team_members, $publications
-        ]);
-        
-        if ($result) {
+        if ($model->create($data)) {
             $_SESSION['success'] = 'Riset berhasil ditambahkan!';
         } else {
-            $_SESSION['error'] = 'Gagal menambahkan riset: ' . pg_last_error($this->db);
+            $_SESSION['error'] = 'Gagal menambahkan riset.';
         }
         
         header('Location: index.php?page=admin-research');
         exit;
     }
     
-    private function updateResearch() {
+    private function updateResearch($model) {
         $id = intval($_GET['id'] ?? 0);
-        $title = $_POST['title'] ?? '';
-        $description = $_POST['description'] ?? '';
-        $category = $_POST['category'] ?? '';
-        $status = $_POST['status'] ?? 'active';
+        $existing = $model->getById($id);
         
-        // Convert empty string to null for date fields
-        $start_date = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
-        $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
+        if (!$existing) {
+            $_SESSION['error'] = 'Riset tidak ditemukan';
+            header('Location: index.php?page=admin-research');
+            exit;
+        }
+
+        $data = [
+            'title' => $_POST['title'] ?? '',
+            'description' => $_POST['description'] ?? '',
+            'category' => $_POST['category'] ?? '',
+            'status' => $_POST['status'] ?? 'active',
+            'start_date' => !empty($_POST['start_date']) ? $_POST['start_date'] : null,
+            'end_date' => !empty($_POST['end_date']) ? $_POST['end_date'] : null,
+            'funding' => !empty($_POST['funding']) ? $_POST['funding'] : null,
+            'team_members' => !empty($_POST['team_members']) ? $_POST['team_members'] : null,
+            'publications' => !empty($_POST['publications']) ? $_POST['publications'] : null
+        ];
         
-        // Convert empty string to null for optional text fields
-        $funding = !empty($_POST['funding']) ? $_POST['funding'] : null;
-        $team_members = !empty($_POST['team_members']) ? $_POST['team_members'] : null;
-        $publications = !empty($_POST['publications']) ? $_POST['publications'] : null;
-        
-        // Get existing research
-        $existing = $this->getResearchById($id);
-        $image = $existing['image'] ?? null;
+        $data['image'] = $existing['image'];
         
         // Check if user wants to remove current image
         if (isset($_POST['remove_image']) && $_POST['remove_image'] == '1') {
-            $image = null;
-            // Delete old image file if exists
-            if ($existing && $existing['image'] && file_exists(__DIR__ . '/../../public/' . $existing['image'])) {
+            $data['image'] = null;
+            if ($existing['image'] && file_exists(__DIR__ . '/../../public/' . $existing['image'])) {
                 @unlink(__DIR__ . '/../../public/' . $existing['image']);
             }
         }
         
         // Handle new image upload
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            // Delete old image if exists
-            if ($existing && $existing['image'] && file_exists(__DIR__ . '/../../public/' . $existing['image'])) {
+            if ($existing['image'] && file_exists(__DIR__ . '/../../public/' . $existing['image'])) {
                 @unlink(__DIR__ . '/../../public/' . $existing['image']);
             }
-            $image = $this->uploadImage($_FILES['image'], 'research');
+            $data['image'] = $this->uploadImage($_FILES['image'], 'research');
         }
         
-        $query = "UPDATE research SET title = $1, description = $2, category = $3, image = $4, status = $5, 
-                  start_date = $6, end_date = $7, funding = $8, team_members = $9, 
-                  publications = $10, updated_at = NOW() WHERE id = $11";
-        $result = @pg_query_params($this->db, $query, [
-            $title, $description, $category, $image, $status, $start_date, $end_date, 
-            $funding, $team_members, $publications, $id
-        ]);
-        
-        if ($result) {
+        if ($model->update($id, $data)) {
             $_SESSION['success'] = 'Riset berhasil diupdate!';
         } else {
-            $_SESSION['error'] = 'Gagal mengupdate riset: ' . pg_last_error($this->db);
+            $_SESSION['error'] = 'Gagal mengupdate riset.';
         }
         
         header('Location: index.php?page=admin-research');
         exit;
     }
     
-    private function deleteResearch() {
+    private function deleteResearch($model) {
         $id = intval($_GET['id'] ?? 0);
+        $existing = $model->getById($id);
         
-        // Get existing research to delete image
-        $existing = $this->getResearchById($id);
-        
-        $query = "DELETE FROM research WHERE id = $1";
-        $result = @pg_query_params($this->db, $query, [$id]);
-        
-        if ($result) {
-            // Delete image file if exists
+        if ($model->delete($id)) {
             if ($existing && $existing['image'] && file_exists(__DIR__ . '/../../public/' . $existing['image'])) {
                 @unlink(__DIR__ . '/../../public/' . $existing['image']);
             }
-            
             $_SESSION['success'] = 'Riset berhasil dihapus!';
         } else {
             $_SESSION['error'] = 'Gagal menghapus riset!';

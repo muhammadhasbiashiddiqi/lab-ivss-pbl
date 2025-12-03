@@ -34,7 +34,7 @@ try {
 
         // Get latest notifications
         $result = pg_query_params($db, "
-            SELECT mr.*, u.name AS supervisor_name
+            SELECT mr.*, u.username AS supervisor_name
             FROM member_registrations mr
             LEFT JOIN users u ON mr.supervisor_id = u.id
             WHERE mr.status = 'pending_supervisor' AND mr.supervisor_id = $1
@@ -60,7 +60,7 @@ try {
 
         // Get latest notifications
         $result = pg_query($db, "
-            SELECT mr.*, u.name AS supervisor_name
+            SELECT mr.*, u.username AS supervisor_name
             FROM member_registrations mr
             LEFT JOIN users u ON mr.supervisor_id = u.id
             WHERE mr.status = 'pending_lab_head'
@@ -86,7 +86,7 @@ try {
 
         // Get latest notifications
         $result = pg_query($db, "
-            SELECT mr.*, u.name AS supervisor_name
+            SELECT mr.*, u.username AS supervisor_name
             FROM member_registrations mr
             LEFT JOIN users u ON mr.supervisor_id = u.id
             WHERE mr.status IN ('pending_supervisor', 'pending_lab_head')

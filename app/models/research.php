@@ -8,92 +8,134 @@ class Research {
         $this->conn = $db;
     }
 
-    // Get all research
-    public function getAll($limit = null, $status = 'active') {
-        $query = "SELECT r.*, u.username as leader_name 
-                  FROM " . $this->table . " r
-                  LEFT JOIN users u ON r.leader_id = u.id
-                  WHERE r.status = $1
-                  ORDER BY r.created_at DESC";
+    public function getAll() {
+        $query = "SELECT * FROM " . $this->table . " ORDER BY created_at DESC";
+        $result = pg_query($this->conn, $query);
         
-        if ($limit) {
-            $query .= " LIMIT " . intval($limit);
+        $researches = array();
+        if ($result) {
+            while ($row = pg_fetch_assoc($result)) {
+                // Format image URL if needed
+                if (!empty($row['image'])) {
+                    $row['image_url'] = $row['image'];
+                } else {
+                    $row['image_url'] = null;
+                }
+                $researches[] = $row;
+            }
         }
-
-        $result = pg_query_params($this->conn, $query, array($status));
-        
-        if (!$result) {
-            return [];
-        }
-
-        $research = array();
-        while ($row = pg_fetch_assoc($result)) {
-            $research[] = $row;
-        }
-        return $research;
+        return $researches;
     }
 
-    // Get research details
     public function getById($id) {
-        $query = "SELECT r.*, u.username as leader_name 
-                  FROM " . $this->table . " r
-                  LEFT JOIN users u ON r.leader_id = u.id
-                  WHERE r.id = $1";
-        
+        $query = "SELECT * FROM " . $this->table . " WHERE id = $1";
         $result = pg_query_params($this->conn, $query, array($id));
         
-        if (!$result) {
-            return false;
+        if ($result && pg_num_rows($result) > 0) {
+            $row = pg_fetch_assoc($result);
+            if (!empty($row['image'])) {
+                $row['image_url'] = $row['image'];
+            } else {
+                $row['image_url'] = null;
+            }
+            return $row;
         }
-        
-        return pg_fetch_assoc($result);
+        return null;
     }
 
-    // Get research members using function get_research_members()
     public function getMembers($research_id) {
         $query = "SELECT * FROM get_research_members($1)";
-        
         $result = pg_query_params($this->conn, $query, array($research_id));
         
-        if (!$result) {
-            return [];
-        }
-
         $members = array();
-        while ($row = pg_fetch_assoc($result)) {
-            $members[] = $row;
+        if ($result) {
+            while ($row = pg_fetch_assoc($result)) {
+                $members[] = $row;
+            }
         }
         return $members;
     }
 
-    // Add member using procedure add_member_to_research()
-    public function addMember($research_id, $user_id, $role = 'member') {
+    public function addMember($research_id, $user_id, $role) {
         $query = "CALL add_member_to_research($1, $2, $3)";
-        
-        $result = pg_query_params($this->conn, $query, array($research_id, $user_id, $role));
-        
-        return $result !== false;
+        return pg_query_params($this->conn, $query, array($research_id, $user_id, $role));
     }
 
-    // Remove member using procedure remove_member_from_research()
     public function removeMember($research_id, $user_id) {
         $query = "CALL remove_member_from_research($1, $2)";
-        
-        $result = pg_query_params($this->conn, $query, array($research_id, $user_id));
-        
-        return $result !== false;
+        return pg_query_params($this->conn, $query, array($research_id, $user_id));
     }
 
-    // Get statistics using function get_research_statistics()
     public function getStats() {
         $query = "SELECT * FROM get_research_statistics()";
-        
         $result = pg_query($this->conn, $query);
         
-        if (!$result) {
-            return false;
+        if ($result) {
+            return pg_fetch_assoc($result);
         }
+        return [
+            'total_research' => 0,
+            'active_research' => 0,
+            'completed_research' => 0,
+            'total_members' => 0
+        ];
+    }
+
+    // CRUD Methods
+    public function create($data) {
+        $query = "INSERT INTO " . $this->table . " 
+                  (title, description, category, image, leader_id, status, start_date, end_date, funding, team_members, publications, created_at) 
+                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW()) RETURNING id";
         
-        return pg_fetch_assoc($result);
+        $params = [
+            $data['title'],
+            $data['description'],
+            $data['category'],
+            $data['image'] ?? null,
+            $data['leader_id'] ?? null,
+            $data['status'] ?? 'active',
+            $data['start_date'] ?? null,
+            $data['end_date'] ?? null,
+            $data['funding'] ?? null,
+            $data['team_members'] ?? null,
+            $data['publications'] ?? null
+        ];
+
+        $result = pg_query_params($this->conn, $query, $params);
+        
+        if ($result) {
+            $row = pg_fetch_assoc($result);
+            return $row['id'];
+        }
+        return false;
+    }
+
+    public function update($id, $data) {
+        $query = "UPDATE " . $this->table . " 
+                  SET title = $1, description = $2, category = $3, image = $4, status = $5, 
+                      start_date = $6, end_date = $7, funding = $8, team_members = $9, 
+                      publications = $10, updated_at = NOW() 
+                  WHERE id = $11";
+        
+        $params = [
+            $data['title'],
+            $data['description'],
+            $data['category'],
+            $data['image'], // Can be null or existing image
+            $data['status'],
+            $data['start_date'] ?? null,
+            $data['end_date'] ?? null,
+            $data['funding'] ?? null,
+            $data['team_members'] ?? null,
+            $data['publications'] ?? null,
+            $id
+        ];
+
+        return pg_query_params($this->conn, $query, $params);
+    }
+
+    public function delete($id) {
+        $query = "DELETE FROM " . $this->table . " WHERE id = $1";
+        return pg_query_params($this->conn, $query, array($id));
     }
 }

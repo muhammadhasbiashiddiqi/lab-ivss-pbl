@@ -16,6 +16,21 @@ class MemberController {
     }
 
     public function dashboard() {
+        // Get user ID from session
+        $userId = $_SESSION['user_id'] ?? null;
+        
+        if (!$userId) {
+            header('Location: index.php?page=login');
+            exit;
+        }
+        
+        // Initialize data
+        $totalMyResearch = 0;
+        $totalMyPublications = 0;
+        $currentMemberStatus = 'aktif';
+        $supervisorInfo = null;
+        $myResearches = [];
+        
         // Member dashboard view
         require_once __DIR__ . '/../../view/member/dashboard.php';
     }

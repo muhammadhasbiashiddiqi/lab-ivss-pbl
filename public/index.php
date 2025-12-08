@@ -190,10 +190,12 @@ switch ($page) {
 
     // Dosen Routes (Publications & Students)
     case 'admin-publications':
-        require __DIR__ . '/../view/admin/publications/index.php';
+        require __DIR__ . '/../app/controllers/AdminController.php';
+        (new AdminController($pg))->publications();
         break;
     case 'admin-students':
-        require __DIR__ . '/../view/admin/students/index.php';
+        require __DIR__ . '/../app/controllers/AdminController.php';
+        (new AdminController($pg))->students();
         break;
 
     // Member Routes

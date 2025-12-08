@@ -29,7 +29,7 @@
                 <a href="#fasilitas" class="text-gray-700 hover:text-blue-900 font-medium transition">Fasilitas</a>
                 <a href="#member" class="text-gray-700 hover:text-blue-900 font-medium transition">Member</a>
                 <a href="#berita" class="text-gray-700 hover:text-blue-900 font-medium transition">Berita</a>
-                <a href="#kontak" class="text-gray-700 hover:text-blue-900 font-medium transition">Kontak</a>
+                <!-- <a href="#kontak" class="text-gray-700 hover:text-blue-900 font-medium transition">Kontak</a> -->
             </div>
             
             <!-- Tombol Login - Agak ke kiri -->
@@ -57,7 +57,7 @@
             <a href="#fasilitas" class="block py-2 text-gray-700 hover:text-blue-900 font-medium">Fasilitas</a>
             <a href="#member" class="block py-2 text-gray-700 hover:text-blue-900 font-medium">Member</a>
             <a href="#berita" class="block py-2 text-gray-700 hover:text-blue-900 font-medium">Berita</a>
-            <a href="#kontak" class="block py-2 text-gray-700 hover:text-blue-900 font-medium">Kontak</a>
+            <!-- <a href="#kontak" class="block py-2 text-gray-700 hover:text-blue-900 font-medium">Kontak</a> -->
                 <div class="pt-3 space-y-2">
                 <a href="index.php?page=login" target="_blank" rel="noopener noreferrer" class="block py-2 px-4 text-center bg-blue-900 text-white rounded-lg font-medium hover:bg-blue-800">
                     Login

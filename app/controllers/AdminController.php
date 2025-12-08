@@ -685,11 +685,11 @@ class AdminController
         $filter = $_GET['filter'] ?? 'all';
 
         // Fetch members
-        $query = "SELECT u.id, u.username as name, u.email, u.is_active, u.created_at, m.nim, 
-                  CASE WHEN u.is_active THEN 'active' ELSE 'inactive' END as status
+        $query = "SELECT u.id, u.username as name, u.email, u.status, u.created_at, m.nim
                   FROM users u 
+                  JOIN roles r ON u.role_id = r.id
                   LEFT JOIN mahasiswa m ON u.id = m.user_id 
-                  WHERE u.role = 'member' 
+                  WHERE r.role_name = 'mahasiswa' 
                   ORDER BY u.created_at DESC";
         
         $result = pg_query($this->db, $query);

@@ -56,7 +56,7 @@ $userRole = $_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'member');
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
                     </svg>
-                    <span>Setting Landing Page</span>
+                    <span>Setting Pages</span>
                 </div>
                 <svg class="w-4 h-4 transition-transform chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -219,15 +219,7 @@ $userRole = $_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'member');
             </div>
         </a>
         
-        <!-- Setting Dasar -->
-        <a href="index.php?page=admin-settings" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'admin-settings' ? 'bg-blue-900 text-white font-medium' : 'text-slate-700 hover:bg-slate-100' ?>">
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                </svg>
-                <span>Setting Dasar</span>
-            </div>
-        </a>
+
         
         <?php elseif ($userRole === 'dosen'): ?>
         <!-- === MENU DOSEN === -->
@@ -278,10 +270,7 @@ $userRole = $_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'member');
         
         <?php endif; ?>
         
-    </nav>
-    
-    <!-- Pengaturan -->
-    <div class="px-3 py-2 mt-auto">
+        <!-- Pengaturan -->
         <a href="index.php?page=admin-settings&tab=profile" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= isset($_GET['tab']) && ($_GET['tab'] === 'profile' || $_GET['tab'] === 'security') ? 'bg-blue-900 text-white font-medium hover:bg-blue-800' : 'text-slate-700 hover:bg-slate-100' ?>">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -291,7 +280,8 @@ $userRole = $_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'member');
                 <span>Pengaturan</span>
             </div>
         </a>
-    </div>
+        
+    </nav>
 
     <!-- Logout Button -->
     <div class="p-3 border-t border-slate-200">

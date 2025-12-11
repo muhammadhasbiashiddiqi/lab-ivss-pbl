@@ -1,73 +1,67 @@
 <?php
 
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../models/visimisi.php';
-
-class VisimisiController {
+class VisiMisiController {
     private $db;
-    private $visimisi;
-    public function __construct() {
-        $this->db = getDb();
-        $this->visimisi = new Visimisi($this->db);
+    private $model;
+
+    public function __construct($db) {
+        $this->db = $db;
+
+        require_once __DIR__ . '/../models/VisiMisi.php';
+        $this->model = new VisiMisi($this->db);
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
-    // Action: Update (Edit existing news)
-   public function update() {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        header('Location: index.php?page=admin-visimisi');
-        exit;
+    /**
+     * Tampilkan form edit Visi & Misi.
+     * Memastikan data tersedia sebelum memuat view.
+     */
+    public function edit() {
+        // Panggil ensureRecordExists(). Model akan membuat data default jika belum ada.
+        $data = $this->model->ensureRecordExists();
+        
+        if (!$data) {
+             $_SESSION['error'] = 'Gagal memuat data Visi & Misi.';
+             header("Location: index.php?page=admin-dashboard");
+             return;
+        }
+        
+        // Variabel $data akan tersedia di view/admin/visimisi/edit.php
+        include __DIR__ . '/../../view/admin/visimisi/edit.php'; 
     }
 
-    $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-    $redirect_error_edit = 'Location: index.php?page=admin-visimisi&action=edit&id=' . $id;
+    /**
+     * Simpan perubahan Visi & Misi.
+     */
+    public function update() {
+        // Ambil ID dan data dari form POST
+        $id = $_POST['id'] ?? 0;
+        
+        if (!$id) {
+             $_SESSION['error'] = 'ID Visi & Misi tidak valid untuk update.';
+             header("Location: index.php?page=admin-visimisi");
+             exit;
+        }
+        
+        // Sanitasi dan ambil data
+        $data = [
+            'visi' => htmlspecialchars($_POST['visi'] ?? '', ENT_QUOTES, 'UTF-8'),
+            'misi' => htmlspecialchars($_POST['misi'] ?? '', ENT_QUOTES, 'UTF-8')
+        ];
+        
+        $success = $this->model->update($id, $data);
+        
+        if ($success) {
+            $_SESSION['success'] = 'Visi & Misi berhasil diupdate!';
+        } else {
+            $_SESSION['error'] = 'Gagal mengupdate Visi & Misi. Silakan cek log database.';
+        }
 
-    if ($id <= 0) {
-        $_SESSION['error'] = 'ID Visi Misi tidak valid';
-        header('Location: index.php?page=admin-visimisi');
-        exit;
-    }
-
-    // Get existing visimisi
-    $existing_visimisi = $this->visimisi->getById($id);
-    if (!$existing_visimisi) {
-        $_SESSION['error'] = 'Visi Misi tidak ditemukan';
-        header('Location: index.php?page=admin-visimisi'); // Menggunakan 'admin-visimisi'
-        exit;
-    }
-
-    // Validasi input
-    if (empty($_POST['visi']) || empty($_POST['misi'])) {
-        $_SESSION['error'] = 'Visi dan Misi wajib diisi'; // Pesan yang lebih sesuai
-        header($redirect_error_edit);
-        exit;
-    }
-    
-    // Set properties
-    $this->visimisi->id = $id;
-    // Ambil langsung dari POST, karena validasi sudah dilakukan
-    $this->visimisi->visi = $_POST['visi'];
-    $this->visimisi->misi = $_POST['misi'];
-    
-    // Update visimisi
-    if ($this->visimisi->update()) {
-        $_SESSION['success'] = 'Visi Misi berhasil diperbarui';
-        header('Location: index.php?page=admin-visimisi'); // Menggunakan 'admin-visimisi'
-    } else {
-        $_SESSION['error'] = 'Gagal memperbarui Visi Misi';
-        header($redirect_error_edit); // Redirect kembali ke halaman edit jika gagal
-    }
-    exit;
-}
-}
-// Handle action dari URL
-if (isset($_GET['action'])) {
-    $controller = new VisimisiController();
-    $action = $_GET['action'];
-
-    if (method_exists($controller, $action)) {
-        $controller->$action();
-    } else {
-        header('Location: index.php?page=admin-visimisi');
+        // Redirect kembali ke halaman edit
+        header("Location: index.php?page=admin-visimisi");
         exit;
     }
 }

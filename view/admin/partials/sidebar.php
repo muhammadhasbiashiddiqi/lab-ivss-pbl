@@ -103,6 +103,15 @@ $userRole = $_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'member');
                         <span>Fasilitas Lab</span>
                     </div>
                 </a>
+                <!-- visimisi -->
+                <a href="edit.php?page=admin-visimisi&action=edit" class="<?= $visiMisiActive ?>">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.242a2.404 2.404 0 010 3.394L16.485 10l-4.485 4.485-2-2m-4 0l-2 2"></path>
+                        </svg>
+                        <span>Visi & Misi</span>
+                    </div>
+                </a>
 
                 <!-- Galeri Foto -->
                 <a href="index.php?page=admin-gallery" class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $currentPage === 'admin-gallery' ? 'bg-blue-100 text-blue-900 font-medium' : 'text-slate-600 hover:bg-slate-50' ?>">

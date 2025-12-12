@@ -161,6 +161,12 @@ switch ($page) {
         require __DIR__ . '/../app/controllers/AdminController.php';
         (new AdminController($pg))->settings();
         break;
+    case 'admin-visimisi':
+        require_once __DIR__ . '/../app/controllers/visimisiController.php';
+        $controller = new visimisiController($pg); // <-- Menggunakan $pg
+        $action = $_GET['action'] ?? 'edit';
+        $controller->$action();
+        break;
 
     // Team Members Management
     case 'admin-team':

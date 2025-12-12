@@ -581,6 +581,17 @@ INSERT INTO research_members (research_id, user_id, role, status) VALUES
 (3, 6, 'contributor', 'active'),  -- NLP untuk Bahasa Indonesia
 (4, 6, 'member', 'active');       -- IoT-based Smart Room Monitoring
 
+-- ========================================
+-- 13. Visi misi
+-- ========================================
+CREATE TABLE visimisi (
+    id SERIAL PRIMARY KEY,
+    visi TEXT NOT NULL,
+    misi TEXT NOT NULL,
+    author_id INTEGER REFERENCES users(id), -- Kolom yang diasumsikan dari visimisi.php
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
 
 -- ========================================

@@ -26,6 +26,7 @@
                 <a href="#beranda" class="text-gray-700 hover:text-blue-900 font-medium transition">Beranda</a>
                 <a href="#profil" class="text-gray-700 hover:text-blue-900 font-medium transition">Profil</a>
                 <a href="#riset" class="text-gray-700 hover:text-blue-900 font-medium transition">Riset</a>
+                <a href="#visimisi" class="block py-2 text-gray-700 hover:text-blue-900 front-medium">visi misi</a>
                 <a href="#fasilitas" class="text-gray-700 hover:text-blue-900 font-medium transition">Fasilitas</a>
                 <a href="#member" class="text-gray-700 hover:text-blue-900 font-medium transition">Member</a>
                 <a href="#berita" class="text-gray-700 hover:text-blue-900 font-medium transition">Berita</a>

@@ -493,6 +493,32 @@ class AdminController
         header('Location: index.php?page=admin-news');
         exit;
     }
+    //managemen visimisi
+    public function visimisi() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // **PERBAIKI JALUR INI**
+        // Coba jalur relatif ke file VisiMisiController, asumsi keduanya sejajar di 'controllers/'
+        require_once __DIR__ . '/VisiMisiController.php'; 
+        
+        $controller = new VisiMisiController($this->db);
+
+        $action = $_GET['action'] ?? 'edit';
+
+        switch ($action) {
+            case 'edit':
+                $controller->edit();
+                break;
+            case 'update':
+                $controller->update();
+                break;
+            default:
+                $controller->edit(); 
+                break;
+        }
+    }
 
     // Manajemen Riset
     public function research()

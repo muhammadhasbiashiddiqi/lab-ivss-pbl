@@ -107,6 +107,10 @@ class HomeController {
         $equipmentModel = new Equipment($this->db);
         $equipmentForLanding = $equipmentModel->getForLanding("30");
 
+        require_once __DIR__ . '/../models/VisiMisi.php';
+        $visimisiModel = new VisiMisi($this->db);
+        $visimisiData = $visimisiModel->ensureRecordExists();
+
         // Muat view dengan layout pages
         require_once __DIR__ . '/../../view/layouts/pages.php';
     }

@@ -519,6 +519,28 @@ class AdminController
                 break;
         }
     }
+    //manajement profil
+    public function profil() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    require_once __DIR__ . '/ProfilController.php'; 
+    $controller = new ProfilController($this->db);
+    $action = $_GET['action'] ?? 'edit'; // Default action adalah 'edit'
+
+    switch ($action) {
+        case 'edit':
+            $controller->edit();
+            break;
+        case 'update':
+            // Update logic akan menangani upload gambar dan update deskripsi
+            $controller->update();
+            break;
+        default:
+            $controller->edit(); 
+            break;
+    }
+}
 
     // Manajemen Riset
     public function research()

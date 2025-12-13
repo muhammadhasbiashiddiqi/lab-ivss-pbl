@@ -592,7 +592,30 @@ CREATE TABLE visimisi (
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+-- ========================================
+-- 14. profil
+-- ========================================
+CREATE TABLE IF NOT EXISTS profil (
+    id SERIAL PRIMARY KEY,
+    deskripsi TEXT NOT NULL,
+    image VARCHAR(255) NOT NULL, -- Path ke file gambar (misalnya: 'uploads/profil/lab_photo.jpg')
+    author_id INTEGER REFERENCES users(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
+
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+   NEW.updated_at = CURRENT_TIMESTAMP; 
+   RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_profil_timestamp
+BEFORE UPDATE ON profil
+FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
 -- ========================================
 -- FUNCTIONS & STORED PROCEDURES

@@ -167,6 +167,10 @@ switch ($page) {
         $action = $_GET['action'] ?? 'edit';
         $controller->$action();
         break;
+    case 'admin-profil':
+        require __DIR__ . '/../app/controllers/AdminController.php'; 
+        (new AdminController($pg))->profil(); 
+        break;
 
     // Team Members Management
     case 'admin-team':

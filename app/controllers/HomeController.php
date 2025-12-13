@@ -110,6 +110,9 @@ class HomeController {
         require_once __DIR__ . '/../models/VisiMisi.php';
         $visimisiModel = new VisiMisi($this->db);
         $visimisiData = $visimisiModel->ensureRecordExists();
+        require_once __DIR__ . '/../models/Profil.php'; 
+        $profilModel = new Profil($this->db);
+        $profilData = $profilModel->ensureRecordExists();
 
         // Muat view dengan layout pages
         require_once __DIR__ . '/../../view/layouts/pages.php';
